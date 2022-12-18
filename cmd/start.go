@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -42,6 +43,23 @@ to quickly create a Cobra application.`,
 
 		dir := currentDir + "/versions/" + optVersion
 		fmt.Println("dir: " + dir)
+
+		os.MkdirAll(dir, 0755)
+
+		beforeDir, err := os.Getwd()
+		if err != nil {
+		}
+		fmt.Println("Before directory: " + beforeDir)
+
+		err = os.Chdir(dir)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		afterDir, err := os.Getwd()
+		if err != nil {
+		}
+		fmt.Println("After directory: " + afterDir)
 
 		downloadFilePart := "mysql-" + optVersion + "-" + myOS
 		fmt.Println("downloadFilePart: " + downloadFilePart)
