@@ -1,16 +1,16 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
+	"fmt"
 	"os"
+	"os/exec"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
-
-
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -48,4 +48,33 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
+func currentDir() string {
+	pwd, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	return pwd
+}
 
+func getUname() string {
+	uname, err := exec.Command("uname", "-s").Output()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	return string(uname)
+}
+
+func getOS() string {
+	uname := getUname()
+	if strings.HasPrefix(strings.ToLower(uname), "linux") {
+		return "linux"
+	} else if strings.HasPrefix(strings.ToLower(uname), "darwin") {
+		return "macos"
+	} else {
+		os.Exit(1)
+		return "unknown"
+	}
+}
