@@ -22,11 +22,26 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("start called")
 
-		var currentDir = currentDir()
+		currentDir := currentDir()
 		fmt.Println("currentDir: " + currentDir)
 
-		var os = getOS()
+		os := getOS()
 		fmt.Println("os: " + os)
+
+		optName := cmd.Flag("name").Value.String()
+		optVersion := cmd.Flag("version").Value.String()
+		optPort := cmd.Flag("port").Value.String()
+		fmt.Println("optName: " + optName)
+		fmt.Println("optVersion : " + optVersion)
+		fmt.Println("optPort: " + optPort)
+
+		fileName := "mysql-" + optVersion + "-" + os
+		fmt.Println("fileName: " + fileName)
+
+		dir := currentDir + "/versions/" + optVersion
+		fmt.Println("dir: " + dir)
+
+		// TODO...
 	},
 }
 
@@ -37,9 +52,13 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	startCmd.PersistentFlags().String("name", "", "Name for database")
-	startCmd.PersistentFlags().String("version", "", "Version for database")
-	startCmd.PersistentFlags().String("port", "", "Port for database")
+	startCmd.PersistentFlags().String("name", "", "Name for database (required)")
+	startCmd.PersistentFlags().String("version", "", "Version for database (required)")
+	startCmd.PersistentFlags().String("port", "", "Port for database (required)")
+
+	startCmd.MarkPersistentFlagRequired("name")
+	startCmd.MarkPersistentFlagRequired("version")
+	startCmd.MarkPersistentFlagRequired("port")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
