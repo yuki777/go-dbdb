@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 Yuki Adachi <yuki777@gmail.com>
 */
 package cmd
 
@@ -77,4 +77,28 @@ func getOS() string {
 		os.Exit(1)
 		return "unknown"
 	}
+}
+
+func exitIfExistDir(checkDir string) {
+	if _, err := os.Stat(checkDir); !os.IsNotExist(err) {
+		fmt.Println(checkDir + " directory is already exist")
+		os.Exit(1)
+	}
+}
+
+func exitIfRunningPort(port string) {
+	cmd := exec.Command("nc", "-z", "127.0.0.1", port)
+	cmd.Run()
+	exitCode := cmd.ProcessState.ExitCode()
+
+	if exitCode == 0 {
+		fmt.Println(port + " is already in use")
+		os.Exit(1)
+	}
+}
+
+// TODO
+func getUrlFileAs(url string, saveAs string) {
+	fmt.Println("url: " + url)
+	fmt.Println("saveAs: " + saveAs)
 }

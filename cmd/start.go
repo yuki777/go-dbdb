@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2022 Yuki Adachi <yuki777@gmail.com>
 */
 package cmd
 
@@ -25,8 +25,8 @@ to quickly create a Cobra application.`,
 		currentDir := currentDir()
 		fmt.Println("currentDir: " + currentDir)
 
-		os := getOS()
-		fmt.Println("os: " + os)
+		myOS := getOS()
+		fmt.Println("myOS: " + myOS)
 
 		optName := cmd.Flag("name").Value.String()
 		optVersion := cmd.Flag("version").Value.String()
@@ -35,13 +35,25 @@ to quickly create a Cobra application.`,
 		fmt.Println("optVersion : " + optVersion)
 		fmt.Println("optPort: " + optPort)
 
-		fileName := "mysql-" + optVersion + "-" + os
-		fmt.Println("fileName: " + fileName)
+		dbUser := "_dbdb_mysql"
+		fmt.Println("dbUser: " + dbUser)
+		dbSocket := "/tmp/dbdb_mysql_" + optPort + ".sock"
+		fmt.Println("dbSocket: " + dbSocket)
 
 		dir := currentDir + "/versions/" + optVersion
 		fmt.Println("dir: " + dir)
 
-		// TODO...
+		downloadFilePart := "mysql-" + optVersion + "-" + myOS
+		fmt.Println("downloadFilePart: " + downloadFilePart)
+
+		checkDir := dir + "/datadir/" + optName
+		fmt.Println("checkDir: " + checkDir)
+		exitIfExistDir(checkDir)
+
+		exitIfRunningPort(optPort)
+
+		// TODO
+		getUrlFileAs("https://dbdb.project8.jp/mysql/"+downloadFilePart+".tar.gz", downloadFilePart+".tar.gz")
 	},
 }
 
