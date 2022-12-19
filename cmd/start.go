@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/exec"
 
 	"github.com/spf13/cobra"
 )
@@ -74,6 +75,51 @@ to quickly create a Cobra application.`,
 		os.MkdirAll(dir+"/datadir/"+optName, 0755)
 
 		extractFile(dir, downloadFilePart)
+
+		// mysqld initialize
+		mysqldCmd := exec.Command(
+			dir+"/basedir/bin/mysqld",
+			"--initialize-insecure",
+			"--user="+dbUser,
+			"--port="+optPort,
+			"--socket="+dbSocket,
+			"--basedir="+dir+"/basedir",
+			"--plugin-dir="+dir+"/basedir/lib/plugin",
+			"--datadir="+dir+"/datadir/"+optName,
+			"--log-error="+dir+"/datadir/"+optName+"/mysqld.err",
+			"--pid-file="+dir+"/datadir/"+optName+"/mysql.pid",
+		)
+		mysqldCmd.Run()
+		mysqldExitCode := mysqldCmd.ProcessState.ExitCode()
+		if mysqldExitCode != 0 {
+			fmt.Println("Unknown error on mysqld")
+			os.Exit(1)
+		}
+
+		// mysql.port.init
+		mysqlPortFile, err := os.Create(dir + "/datadir/" + optName + "/mysql.port.init")
+		if err != nil {
+			panic(err)
+		}
+		defer mysqlPortFile.Close()
+		_, err = mysqlPortFile.WriteString(optPort)
+		if err != nil {
+			panic(err)
+		}
+
+		// my.cnf
+		myCnf, err := os.Create(dir + "/datadir/" + optName + "/my.cnf")
+		if err != nil {
+			panic(err)
+		}
+		defer myCnf.Close()
+		myCnfText := "[mysqld]\nbind-address = 127.0.0.1"
+		_, err = myCnf.WriteString(myCnfText)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println("my.cnf is here. " + dir + "/datadir/" + optName + "/my.cnf")
 	},
 }
 
