@@ -5,6 +5,8 @@ package cmd
 
 import (
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"os/exec"
 	"strings"
@@ -97,8 +99,66 @@ func exitIfRunningPort(port string) {
 	}
 }
 
-// TODO
 func getUrlFileAs(url string, saveAs string) {
 	fmt.Println("url: " + url)
 	fmt.Println("saveAs: " + saveAs)
+
+	if _, err := os.Stat(saveAs); !os.IsNotExist(err) {
+		fmt.Println(saveAs + " is already exist")
+		return
+	}
+
+	response, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+	defer response.Body.Close()
+
+	reader := response.Body
+
+	file, err := os.Create(saveAs)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	_, err = io.Copy(file, reader)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func extractFile(dir string, filepart string) {
+	if _, err := os.Stat(dir + "/basedir"); !os.IsNotExist(err) {
+		fmt.Println(dir + "/basedir directory is already exist")
+		return
+	}
+
+	fmt.Println("Extracting..." + filepart)
+	os.MkdirAll(dir+"/basedir", 0755)
+	os.Chdir(dir + "/basedir")
+
+	cpCmd := exec.Command("cp", dir+"/"+filepart+".tar.gz", dir+"/basedir/")
+	cpCmd.Run()
+	cpExitCode := cpCmd.ProcessState.ExitCode()
+	if cpExitCode != 0 {
+		fmt.Println("Unknown error on cp")
+		os.Exit(1)
+	}
+
+	tarCmd := exec.Command("tar", "zxf", filepart+".tar.gz", "--strip-components", "1")
+	tarCmd.Run()
+	tarExitCode := tarCmd.ProcessState.ExitCode()
+	if tarExitCode != 0 {
+		fmt.Println("Unknown error on tar")
+		os.Exit(1)
+	}
+
+	rmCmd := exec.Command("rm", "-f", filepart+".tar.gz")
+	rmCmd.Run()
+	rmExitCode := rmCmd.ProcessState.ExitCode()
+	if rmExitCode != 0 {
+		fmt.Println("Unknown error on tar")
+		os.Exit(1)
+	}
 }

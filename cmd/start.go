@@ -70,8 +70,10 @@ to quickly create a Cobra application.`,
 
 		exitIfRunningPort(optPort)
 
-		// TODO
 		getUrlFileAs("https://dbdb.project8.jp/mysql/"+downloadFilePart+".tar.gz", downloadFilePart+".tar.gz")
+		os.MkdirAll(dir+"/datadir/"+optName, 0755)
+
+		extractFile(dir, downloadFilePart)
 	},
 }
 
