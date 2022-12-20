@@ -11,9 +11,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// startCmd represents the start command
-var startCmd = &cobra.Command{
-	Use:   "start",
+// createCmd represents the create command
+var createCmd = &cobra.Command{
+	Use:   "create",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -22,7 +22,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("start called")
+		fmt.Println("create called")
 
 		currentDir := currentDir()
 		fmt.Println("currentDir: " + currentDir)
@@ -120,25 +120,32 @@ to quickly create a Cobra application.`,
 		}
 
 		fmt.Println("my.cnf is here. " + dir + "/datadir/" + optName + "/my.cnf")
+
+		err = os.Chdir(currentDir)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		printUsage(optName, optVersion, optPort)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(startCmd)
+	rootCmd.AddCommand(createCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	startCmd.PersistentFlags().String("name", "", "Name for database (required)")
-	startCmd.PersistentFlags().String("version", "", "Version for database (required)")
-	startCmd.PersistentFlags().String("port", "", "Port for database (required)")
+	createCmd.PersistentFlags().String("name", "", "Name for database (required)")
+	createCmd.PersistentFlags().String("version", "", "Version for database (required)")
+	createCmd.PersistentFlags().String("port", "", "Port for database (required)")
 
-	startCmd.MarkPersistentFlagRequired("name")
-	startCmd.MarkPersistentFlagRequired("version")
-	startCmd.MarkPersistentFlagRequired("port")
+	createCmd.MarkPersistentFlagRequired("name")
+	createCmd.MarkPersistentFlagRequired("version")
+	createCmd.MarkPersistentFlagRequired("port")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

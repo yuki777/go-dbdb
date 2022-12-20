@@ -162,3 +162,28 @@ func extractFile(dir string, filepart string) {
 		os.Exit(1)
 	}
 }
+
+func printUsage(optName string, optVersion string, optPort string) {
+	currentDir := currentDir()
+
+	prefix := currentDir + "/go-dbdb"
+	fmt.Println("")
+	fmt.Println("# Start")
+	fmt.Println(prefix + " start --name=" + optName + " --version=" + optVersion + " --port=" + optPort)
+	fmt.Println("")
+	fmt.Println("# Stop")
+	fmt.Println(prefix + " stop --name=" + optName)
+	fmt.Println("")
+	fmt.Println("# Restart")
+	fmt.Println(prefix + " restart --name=" + optName)
+	fmt.Println("")
+	fmt.Println("# Status")
+	fmt.Println(prefix + " status --name=" + optName)
+	fmt.Println("")
+	fmt.Println("# Connect")
+	fmt.Println(prefix + " connect --name=" + optName)
+	fmt.Println("")
+	fmt.Println("# Delete")
+	fmt.Println(prefix + " delete --name=" + optName)
+	fmt.Println("")
+}
