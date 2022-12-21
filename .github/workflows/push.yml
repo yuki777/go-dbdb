@@ -1,0 +1,17 @@
+name: Push
+
+on:
+  push:
+    branches-ignore:
+      - main
+    tags-ignore:
+      - .*
+  workflow_dispatch:
+
+jobs:
+  test:
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run mysql test
+        run: |
+          go run main.go
