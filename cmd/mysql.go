@@ -27,6 +27,12 @@ to quickly create a Cobra application.`,
 func init() {
 	// rootCmd.AddCommand(mysqlCmd)
 	mysqlCmd.AddCommand(createCmd)
+	// mysqlCmd.AddCommand(startCmd)
+	// mysqlCmd.AddCommand(stopCmd)
+	// mysqlCmd.AddCommand(restartCmd)
+	// mysqlCmd.AddCommand(statusCmd)
+	// mysqlCmd.AddCommand(connectCmd)
+	// mysqlCmd.AddCommand(deleteCmd)
 
 	// Here you will define your flags and configuration settings.
 

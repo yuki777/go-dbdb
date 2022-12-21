@@ -50,6 +50,9 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	rootCmd.AddCommand(mysqlCmd)
+	// rootCmd.AddCommand(postgresqlCmd)
+	// rootCmd.AddCommand(redisCmd)
+	// rootCmd.AddCommand(mongodbCmd)
 }
 
 func currentDir() string {
@@ -171,7 +174,7 @@ func printUsage(optName string, optVersion string, optPort string) {
 	prefix := currentDir + "/go-dbdb"
 	fmt.Println("")
 	fmt.Println("# Start")
-	fmt.Println(prefix + " start --name=" + optName + " --version=" + optVersion + " --port=" + optPort)
+	fmt.Println(prefix + " start --name=" + optName)
 	fmt.Println("")
 	fmt.Println("# Stop")
 	fmt.Println(prefix + " stop --name=" + optName)
