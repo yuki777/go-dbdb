@@ -19,5 +19,4 @@ jobs:
           go version
           go run main.go
           go run main.go mysql
-          go run main.go mysql create --name=mysql57 --version 5.7.31 --port 13306
-          echo $?
+          go run main.go mysql create --name=mysql57 --version 5.7.31 --port 13306 || echo $?
