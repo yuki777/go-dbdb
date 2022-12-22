@@ -89,11 +89,9 @@ to quickly create a Cobra application.`,
 			"--log-error="+dir+"/datadir/"+optName+"/mysqld.err",
 			"--pid-file="+dir+"/datadir/"+optName+"/mysql.pid",
 		)
-		mysqldCmd.Run()
-		mysqldExitCode := mysqldCmd.ProcessState.ExitCode()
-		if mysqldExitCode != 0 {
-			fmt.Println("Unknown error on mysqld")
-			os.Exit(1)
+		mysqldErr := mysqldCmd.Run()
+		if mysqldErr != nil {
+			panic(mysqldErr)
 		}
 
 		// mysql.port.init
