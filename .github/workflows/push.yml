@@ -16,3 +16,5 @@ jobs:
       - name: Run mysql test
         run: |
           go run main.go
+          go run main.go mysql
+          go run main.go mysql create
