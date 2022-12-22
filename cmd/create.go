@@ -91,6 +91,8 @@ to quickly create a Cobra application.`,
 			"--pid-file="+dir+"/datadir/"+optName+"/mysql.pid",
 		)
 
+		fmt.Println("mysqldCmd: " + mysqldCmd.String())
+
 		var stdout bytes.Buffer
 		var stderr bytes.Buffer
 		mysqldCmd.Stdout = &stdout
