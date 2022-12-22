@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run mysql test
         run: |
+          apt install -y make gcc g++ build-essential devscripts libpcre3-dev liblzma-dev autoconf zlib1g-dev libevent-dev libcurl4-openssl-dev
           uname -a
           go version
           go run main.go
