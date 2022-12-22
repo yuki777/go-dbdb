@@ -99,6 +99,7 @@ to quickly create a Cobra application.`,
 		mysqldCmd.Stderr = &stderr
 		mysqldErr := mysqldCmd.Run()
 		if mysqldErr != nil {
+			fmt.Println("stdout: " + stdout.String())
 			fmt.Println(fmt.Sprint(mysqldErr) + ": " + stderr.String())
 			panic(mysqldErr)
 		}
