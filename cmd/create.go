@@ -4,6 +4,7 @@ Copyright © 2022 Yuki Adachi <yuki777@gmail.com>
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
@@ -89,10 +90,17 @@ to quickly create a Cobra application.`,
 			"--log-error="+dir+"/datadir/"+optName+"/mysqld.err",
 			"--pid-file="+dir+"/datadir/"+optName+"/mysql.pid",
 		)
+
+		var stdout bytes.Buffer
+		var stderr bytes.Buffer
+		mysqldCmd.Stdout = &stdout
+		mysqldCmd.Stderr = &stderr
 		mysqldErr := mysqldCmd.Run()
 		if mysqldErr != nil {
+			fmt.Println(fmt.Sprint(mysqldErr) + ": " + stderr.String())
 			panic(mysqldErr)
 		}
+		fmt.Println("mysqld result: " + stdout.String())
 
 		// mysql.port.init
 		mysqlPortFile, err := os.Create(dir + "/datadir/" + optName + "/mysql.port.init")
