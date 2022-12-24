@@ -85,8 +85,8 @@ to quickly create a Cobra application.`,
 		// mysqld initialize
 		mysqldCmd := exec.Command(
 			dir+"/basedir/bin/mysqld",
-			"--initialize-insecure",
 			"--no-defaults",
+			"--initialize-insecure",
 			"--user="+dbUser,
 			"--port="+optPort,
 			"--socket="+dbSocket,
