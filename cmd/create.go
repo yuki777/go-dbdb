@@ -86,7 +86,7 @@ to quickly create a Cobra application.`,
 		mysqldCmd := exec.Command(
 			dir+"/basedir/bin/mysqld",
 			"--initialize-insecure",
-			// "--user="+dbUser,
+			"--user="+dbUser,
 			"--port="+optPort,
 			"--socket="+dbSocket,
 			"--basedir="+dir+"/basedir",
@@ -126,7 +126,7 @@ to quickly create a Cobra application.`,
 			panic(err)
 		}
 		defer myCnf.Close()
-		myCnfText := "[mysqld]\nbind-address = 127.0.0.1"
+		myCnfText := "[mysqld]\n" + "bind-address = 127.0.0.1"
 		_, err = myCnf.WriteString(myCnfText)
 		if err != nil {
 			panic(err)
