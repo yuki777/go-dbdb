@@ -13,9 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Run mysql test
         run: |
-          sudo apt-get install -y make gcc g++ build-essential devscripts libpcre3-dev liblzma-dev autoconf zlib1g-dev libevent-dev libcurl4-openssl-dev
           uname -a
           go version
           go run main.go
