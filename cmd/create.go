@@ -77,6 +77,11 @@ to quickly create a Cobra application.`,
 
 		extractFile(dir, downloadFilePart)
 
+		err = os.Chdir(currentDir)
+		if err != nil {
+			fmt.Println(err)
+		}
+
 		// mysqld initialize
 		mysqldCmd := exec.Command(
 			dir+"/basedir/bin/mysqld",
