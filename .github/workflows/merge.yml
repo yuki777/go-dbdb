@@ -1,0 +1,26 @@
+name: Merge
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-on-merge:
+    strategy:
+      matrix:
+        os: [macos-11, macos-12, ubuntu-20.04, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run mysql test
+        if: matrix.os == 'macos-11' || matrix.os == 'macos-12'
+        run: |
+          GOOS=darwin GOARCH=amd64 go build -o bin/go-dbdb-macos-amd64
+          ./bin/go-dbdb-macos-amd64
+      - name: Run mysql test
+        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o bin/go-dbdb-linux-amd64
+          ./bin/go-dbdb-linux-amd64
