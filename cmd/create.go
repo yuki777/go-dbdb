@@ -120,19 +120,18 @@ to quickly create a Cobra application.`,
 			panic(err)
 		}
 
-		// my.cnf
-		myCnf, err := os.Create(dir + "/datadir/" + optName + "/my.cnf")
-		if err != nil {
-			panic(err)
-		}
-		defer myCnf.Close()
-		myCnfText := "[mysqld]\n" + "bind-address = 127.0.0.1"
-		_, err = myCnf.WriteString(myCnfText)
-		if err != nil {
-			panic(err)
-		}
-
-		fmt.Println("my.cnf is here. " + dir + "/datadir/" + optName + "/my.cnf")
+		// // my.cnf
+		// myCnf, err := os.Create(dir + "/datadir/" + optName + "/my.cnf")
+		// if err != nil {
+		// 	panic(err)
+		// }
+		// defer myCnf.Close()
+		// myCnfText := "[mysqld]\n" + "bind-address = 127.0.0.1"
+		// _, err = myCnf.WriteString(myCnfText)
+		// if err != nil {
+		// 	panic(err)
+		// }
+		// fmt.Println("my.cnf is here. " + dir + "/datadir/" + optName + "/my.cnf")
 
 		err = os.Chdir(currentDir)
 		if err != nil {
