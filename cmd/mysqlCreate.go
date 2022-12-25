@@ -12,18 +12,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// createCmd represents the create command
-var createCmd = &cobra.Command{
+var mysqlCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Create mysql server",
+	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("create called")
+		fmt.Println("mysqlCreate called")
 
 		currentDir := currentDir()
 		fmt.Println("currentDir: " + currentDir)
@@ -144,21 +138,21 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	//rootCmd.AddCommand(createCmd)
+	//rootCmd.AddCommand(mysqlCreateCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	createCmd.PersistentFlags().String("name", "", "Name for database (required)")
-	createCmd.PersistentFlags().String("version", "", "Version for database (required)")
-	createCmd.PersistentFlags().String("port", "", "Port for database (required)")
+	mysqlCreateCmd.PersistentFlags().String("name", "", "Name for database (required)")
+	mysqlCreateCmd.PersistentFlags().String("version", "", "Version for database (required)")
+	mysqlCreateCmd.PersistentFlags().String("port", "", "Port for database (required)")
 
-	createCmd.MarkPersistentFlagRequired("name")
-	createCmd.MarkPersistentFlagRequired("version")
-	createCmd.MarkPersistentFlagRequired("port")
+	mysqlCreateCmd.MarkPersistentFlagRequired("name")
+	mysqlCreateCmd.MarkPersistentFlagRequired("version")
+	mysqlCreateCmd.MarkPersistentFlagRequired("port")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// mysqlCreateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
