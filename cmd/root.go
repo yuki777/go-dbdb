@@ -56,12 +56,25 @@ func init() {
 }
 
 func currentDir() string {
+	// current path that you are in
 	pwd, err := os.Getwd()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	return pwd
+
+	// pwd, err := os.Executable()
+	// pwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
+
+	// application path
+	// ex, err := os.Executable()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// exPath := filepath.Dir(filepath.Dir(ex))
+	// fmt.Println(exPath)
+	// return exPath
 }
 
 func getUname() string {
@@ -91,6 +104,16 @@ func exitIfExistDir(checkDir string) {
 		fmt.Println(checkDir + " directory is already exist")
 		os.Exit(1)
 	}
+
+	// currentDir := currentDir()
+	// pattern := targetDir + "/*.csv"
+	// files, err := filepath.Glob(pattern)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// for _, file := range files {
+	// 	fmt.Println(file)
+	// }
 }
 
 func exitIfRunningPort(port string) {
@@ -174,21 +197,21 @@ func printUsage(optName string, optVersion string, optPort string) {
 	prefix := currentDir + "/go-dbdb"
 	fmt.Println("")
 	fmt.Println("# Start")
-	fmt.Println(prefix + " start --name=" + optName)
+	fmt.Println(prefix + " mysql start --name=" + optName)
 	fmt.Println("")
 	fmt.Println("# Stop")
-	fmt.Println(prefix + " stop --name=" + optName)
+	fmt.Println(prefix + " mysql stop --name=" + optName)
 	fmt.Println("")
 	fmt.Println("# Restart")
-	fmt.Println(prefix + " restart --name=" + optName)
+	fmt.Println(prefix + " mysql restart --name=" + optName)
 	fmt.Println("")
 	fmt.Println("# Status")
-	fmt.Println(prefix + " status --name=" + optName)
+	fmt.Println(prefix + " mysql status --name=" + optName)
 	fmt.Println("")
 	fmt.Println("# Connect")
-	fmt.Println(prefix + " connect --name=" + optName)
+	fmt.Println(prefix + " mysql connect --name=" + optName)
 	fmt.Println("")
 	fmt.Println("# Delete")
-	fmt.Println(prefix + " delete --name=" + optName)
+	fmt.Println(prefix + " mysql delete --name=" + optName)
 	fmt.Println("")
 }
