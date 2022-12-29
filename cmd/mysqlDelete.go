@@ -14,8 +14,6 @@ var mysqlDeleteCmd = &cobra.Command{
 	Short: "Delete mysql server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("mysqlDelete called")
-
 		dbdbBaseDir := dbdbBaseDir()
 		log.Println("dbdbBaseDir: " + dbdbBaseDir)
 
@@ -36,7 +34,6 @@ var mysqlDeleteCmd = &cobra.Command{
 		// TODO ./stop.sh $optName $optVersion $optPort
 
 		log.Println(optName, "MySQL database successfully deleted.")
-
 	},
 }
 
