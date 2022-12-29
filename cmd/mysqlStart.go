@@ -15,6 +15,7 @@ var mysqlStartCmd = &cobra.Command{
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mysqlStart called")
+		// --defaults-file=
 	},
 }
 
@@ -26,7 +27,7 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	mysqlStartCmd.PersistentFlags().String("name", "", "Name for database (required)")
-	mysqlStartCmd.PersistentFlags().String("port", "", "Port for database (required)")
+	mysqlStartCmd.PersistentFlags().String("port", "", "Port for database")
 
 	mysqlStartCmd.MarkPersistentFlagRequired("name")
 

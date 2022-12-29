@@ -56,12 +56,25 @@ func init() {
 }
 
 func currentDir() string {
+	// current path that you are in
 	pwd, err := os.Getwd()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	return pwd
+
+	// pwd, err := os.Executable()
+	// pwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
+
+	// application path
+	// ex, err := os.Executable()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// exPath := filepath.Dir(filepath.Dir(ex))
+	// fmt.Println(exPath)
+	// return exPath
 }
 
 func getUname() string {
@@ -91,6 +104,16 @@ func exitIfExistDir(checkDir string) {
 		fmt.Println(checkDir + " directory is already exist")
 		os.Exit(1)
 	}
+
+	// currentDir := currentDir()
+	// pattern := targetDir + "/*.csv"
+	// files, err := filepath.Glob(pattern)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// for _, file := range files {
+	// 	fmt.Println(file)
+	// }
 }
 
 func exitIfRunningPort(port string) {
