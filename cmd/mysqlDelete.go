@@ -35,7 +35,7 @@ var mysqlDeleteCmd = &cobra.Command{
 
 		// TODO ./stop.sh $optName $optVersion $optPort
 
-		log.Println(optName, "MySQL Successfully deleted.")
+		log.Println(optName, "MySQL database successfully deleted.")
 
 	},
 }
