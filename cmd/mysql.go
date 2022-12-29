@@ -4,7 +4,7 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -17,11 +17,11 @@ var mysqlCmd = &cobra.Command{
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			fmt.Println("The name argument is required")
+			log.Println("The name argument is required")
 			cmd.Help()
 			os.Exit(0)
 		}
-		fmt.Println("mysql called")
+		log.Println("mysql called")
 	},
 }
 

@@ -4,11 +4,12 @@ Copyright © 2022 Yuki Adachi <yuki777@gmail.com>
 package cmd
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
+	"os/user"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -55,32 +56,31 @@ func init() {
 	// rootCmd.AddCommand(mongodbCmd)
 }
 
-func currentDir() string {
-	// current path that you are in
-	pwd, err := os.Getwd()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+func dbdbBaseDir() string {
+	dbdbBaseDir := ""
+	xdgDataHome := os.Getenv("XDG_DATA_HOME")
+	if xdgDataHome == "" {
+		currentUser, err := user.Current()
+		if err != nil {
+			os.Exit(1)
+		}
+
+		homeDir := currentUser.HomeDir
+		dbdbBaseDir = homeDir + "/.local/share/dbdb"
+	} else {
+		dbdbBaseDir = xdgDataHome + "/dbdb"
 	}
-	return pwd
 
-	// pwd, err := os.Executable()
-	// pwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	os.MkdirAll(dbdbBaseDir, 0755)
+	os.Chdir(dbdbBaseDir)
 
-	// application path
-	// ex, err := os.Executable()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// exPath := filepath.Dir(filepath.Dir(ex))
-	// fmt.Println(exPath)
-	// return exPath
+	return dbdbBaseDir
 }
 
 func getUname() string {
 	uname, err := exec.Command("uname", "-s").Output()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		os.Exit(1)
 	}
 
@@ -101,19 +101,9 @@ func getOS() string {
 
 func exitIfExistDir(checkDir string) {
 	if _, err := os.Stat(checkDir); !os.IsNotExist(err) {
-		fmt.Println(checkDir + " directory is already exist")
+		log.Println(checkDir + " directory is already exist")
 		os.Exit(1)
 	}
-
-	// currentDir := currentDir()
-	// pattern := targetDir + "/*.csv"
-	// files, err := filepath.Glob(pattern)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// for _, file := range files {
-	// 	fmt.Println(file)
-	// }
 }
 
 func exitIfRunningPort(port string) {
@@ -122,17 +112,17 @@ func exitIfRunningPort(port string) {
 	exitCode := cmd.ProcessState.ExitCode()
 
 	if exitCode == 0 {
-		fmt.Println(port + " is already in use")
+		log.Println(port + " is already in use")
 		os.Exit(1)
 	}
 }
 
 func getUrlFileAs(url string, saveAs string) {
-	fmt.Println("url: " + url)
-	fmt.Println("saveAs: " + saveAs)
+	log.Println("url: " + url)
+	log.Println("saveAs: " + saveAs)
 
 	if _, err := os.Stat(saveAs); !os.IsNotExist(err) {
-		fmt.Println(saveAs + " is already exist")
+		log.Println(saveAs + " is already exist")
 		return
 	}
 
@@ -158,11 +148,11 @@ func getUrlFileAs(url string, saveAs string) {
 
 func extractFile(dir string, filepart string) {
 	if _, err := os.Stat(dir + "/basedir"); !os.IsNotExist(err) {
-		fmt.Println(dir + "/basedir directory is already exist")
+		log.Println(dir + "/basedir directory is already exist")
 		return
 	}
 
-	fmt.Println("Extracting..." + filepart)
+	log.Println("Extracting..." + filepart)
 	os.MkdirAll(dir+"/basedir", 0755)
 	os.Chdir(dir + "/basedir")
 
@@ -170,7 +160,7 @@ func extractFile(dir string, filepart string) {
 	cpCmd.Run()
 	cpExitCode := cpCmd.ProcessState.ExitCode()
 	if cpExitCode != 0 {
-		fmt.Println("Unknown error on cp")
+		log.Println("Unknown error on cp")
 		os.Exit(1)
 	}
 
@@ -178,7 +168,7 @@ func extractFile(dir string, filepart string) {
 	tarCmd.Run()
 	tarExitCode := tarCmd.ProcessState.ExitCode()
 	if tarExitCode != 0 {
-		fmt.Println("Unknown error on tar")
+		log.Println("Unknown error on tar")
 		os.Exit(1)
 	}
 
@@ -186,32 +176,32 @@ func extractFile(dir string, filepart string) {
 	rmCmd.Run()
 	rmExitCode := rmCmd.ProcessState.ExitCode()
 	if rmExitCode != 0 {
-		fmt.Println("Unknown error on tar")
+		log.Println("Unknown error on tar")
 		os.Exit(1)
 	}
 }
 
 func printUsage(optName string, optVersion string, optPort string) {
-	currentDir := currentDir()
+	prefix := os.Args[0]
+	log.Println("prefix:", prefix)
 
-	prefix := currentDir + "/go-dbdb"
-	fmt.Println("")
-	fmt.Println("# Start")
-	fmt.Println(prefix + " mysql start --name=" + optName)
-	fmt.Println("")
-	fmt.Println("# Stop")
-	fmt.Println(prefix + " mysql stop --name=" + optName)
-	fmt.Println("")
-	fmt.Println("# Restart")
-	fmt.Println(prefix + " mysql restart --name=" + optName)
-	fmt.Println("")
-	fmt.Println("# Status")
-	fmt.Println(prefix + " mysql status --name=" + optName)
-	fmt.Println("")
-	fmt.Println("# Connect")
-	fmt.Println(prefix + " mysql connect --name=" + optName)
-	fmt.Println("")
-	fmt.Println("# Delete")
-	fmt.Println(prefix + " mysql delete --name=" + optName)
-	fmt.Println("")
+	log.Println("")
+	log.Println("# Start")
+	log.Println(prefix + " mysql start --name=" + optName)
+	log.Println("")
+	log.Println("# Stop")
+	log.Println(prefix + " mysql stop --name=" + optName)
+	log.Println("")
+	log.Println("# Restart")
+	log.Println(prefix + " mysql restart --name=" + optName)
+	log.Println("")
+	log.Println("# Status")
+	log.Println(prefix + " mysql status --name=" + optName)
+	log.Println("")
+	log.Println("# Connect")
+	log.Println(prefix + " mysql connect --name=" + optName)
+	log.Println("")
+	log.Println("# Delete")
+	log.Println(prefix + " mysql delete --name=" + optName)
+	log.Println("")
 }

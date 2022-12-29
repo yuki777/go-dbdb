@@ -4,7 +4,7 @@ Copyright © 2022 Yuki Adachi <yuki777@gmail.com>
 package cmd
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -14,7 +14,7 @@ var mysqlStartCmd = &cobra.Command{
 	Short: "Start mysql database",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("mysqlStart called")
+		log.Println("mysqlStart called")
 		// --defaults-file=
 	},
 }
