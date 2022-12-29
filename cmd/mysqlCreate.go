@@ -6,6 +6,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 
@@ -17,51 +18,51 @@ var mysqlCreateCmd = &cobra.Command{
 	Short: "Create mysql server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("mysqlCreate called")
+		log.Println("mysqlCreate called")
 
-		currentDir := currentDir()
-		fmt.Println("currentDir: " + currentDir)
+		dbdbBaseDir := dbdbBaseDir()
+		log.Println("dbdbBaseDir: " + dbdbBaseDir)
 
 		myOS := getOS()
-		fmt.Println("myOS: " + myOS)
+		log.Println("myOS: " + myOS)
 
 		optName := cmd.Flag("name").Value.String()
 		optVersion := cmd.Flag("version").Value.String()
 		optPort := cmd.Flag("port").Value.String()
-		fmt.Println("optName: " + optName)
-		fmt.Println("optVersion : " + optVersion)
-		fmt.Println("optPort: " + optPort)
+		log.Println("optName: " + optName)
+		log.Println("optVersion : " + optVersion)
+		log.Println("optPort: " + optPort)
 
 		dbUser := "_dbdb_mysql"
-		fmt.Println("dbUser: " + dbUser)
+		log.Println("dbUser: " + dbUser)
 		dbSocket := "/tmp/dbdb_mysql_" + optPort + ".sock"
-		fmt.Println("dbSocket: " + dbSocket)
+		log.Println("dbSocket: " + dbSocket)
 
-		dir := currentDir + "/versions/" + optVersion
-		fmt.Println("dir: " + dir)
+		dir := dbdbBaseDir + "/mysql/versions/" + optVersion
+		log.Println("dir: " + dir)
 
 		os.MkdirAll(dir, 0755)
 
 		beforeDir, err := os.Getwd()
 		if err != nil {
 		}
-		fmt.Println("Before directory: " + beforeDir)
+		log.Println("Before directory: " + beforeDir)
 
 		err = os.Chdir(dir)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 
 		afterDir, err := os.Getwd()
 		if err != nil {
 		}
-		fmt.Println("After directory: " + afterDir)
+		log.Println("After directory: " + afterDir)
 
 		downloadFilePart := "mysql-" + optVersion + "-" + myOS
-		fmt.Println("downloadFilePart: " + downloadFilePart)
+		log.Println("downloadFilePart: " + downloadFilePart)
 
 		checkDir := dir + "/datadir/" + optName
-		fmt.Println("checkDir: " + checkDir)
+		log.Println("checkDir: " + checkDir)
 		exitIfExistDir(checkDir)
 
 		exitIfRunningPort(optPort)
@@ -71,9 +72,9 @@ var mysqlCreateCmd = &cobra.Command{
 
 		extractFile(dir, downloadFilePart)
 
-		err = os.Chdir(currentDir)
+		err = os.Chdir(dbdbBaseDir)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 
 		// mysqld initialize
@@ -91,7 +92,7 @@ var mysqlCreateCmd = &cobra.Command{
 			"--pid-file="+dir+"/datadir/"+optName+"/mysql.pid",
 		)
 
-		fmt.Println("mysqldCmd: " + mysqldCmd.String())
+		log.Println("mysqldCmd: " + mysqldCmd.String())
 
 		var stdout bytes.Buffer
 		var stderr bytes.Buffer
@@ -99,8 +100,8 @@ var mysqlCreateCmd = &cobra.Command{
 		mysqldCmd.Stderr = &stderr
 		mysqldErr := mysqldCmd.Run()
 		if mysqldErr != nil {
-			fmt.Println("stdout: " + stdout.String())
-			fmt.Println(fmt.Sprint(mysqldErr) + ": " + stderr.String())
+			log.Println("stdout: " + stdout.String())
+			log.Println(fmt.Sprint(mysqldErr) + ": " + stderr.String())
 			panic(mysqldErr)
 		}
 
@@ -126,11 +127,11 @@ var mysqlCreateCmd = &cobra.Command{
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("my.cnf is here. " + dir + "/datadir/" + optName + "/my.cnf")
+		log.Println("my.cnf is here. " + dir + "/datadir/" + optName + "/my.cnf")
 
-		err = os.Chdir(currentDir)
+		err = os.Chdir(dbdbBaseDir)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 
 		printUsage(optName, optVersion, optPort)
