@@ -254,3 +254,15 @@ func validateOptName(optName string) bool {
 	}
 	return true
 }
+
+func fileWrite(path string, content string) {
+	mysqlPortFile, err := os.Create(path)
+	if err != nil {
+		panic(err)
+	}
+	defer mysqlPortFile.Close()
+	_, err = mysqlPortFile.WriteString(content)
+	if err != nil {
+		panic(err)
+	}
+}

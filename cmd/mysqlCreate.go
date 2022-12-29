@@ -4,8 +4,6 @@ Copyright © 2022 Yuki Adachi <yuki777@gmail.com>
 package cmd
 
 import (
-	"bytes"
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -26,13 +24,8 @@ var mysqlCreateCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("mysqlCreate called")
-
 		dbdbBaseDir := dbdbBaseDir()
 		log.Println("dbdbBaseDir: " + dbdbBaseDir)
-
-		myOS := getOS()
-		log.Println("myOS: " + myOS)
 
 		optName := cmd.Flag("name").Value.String()
 		optVersion := cmd.Flag("version").Value.String()
@@ -42,30 +35,14 @@ var mysqlCreateCmd = &cobra.Command{
 		log.Println("optPort: " + optPort)
 
 		dbUser := "_dbdb_mysql"
-		log.Println("dbUser: " + dbUser)
 		dbSocket := "/tmp/dbdb_mysql_" + optPort + ".sock"
-		log.Println("dbSocket: " + dbSocket)
 
 		versionDir := dbdbBaseDir + "/mysql/versions/" + optVersion
 		log.Println("versionDir: " + versionDir)
 		os.MkdirAll(versionDir, 0755)
+		os.Chdir(versionDir)
 
-		beforeDir, err := os.Getwd()
-		if err != nil {
-		}
-		log.Println("Before directory: " + beforeDir)
-
-		err = os.Chdir(versionDir)
-		if err != nil {
-			log.Println(err)
-		}
-
-		afterDir, err := os.Getwd()
-		if err != nil {
-		}
-		log.Println("After directory: " + afterDir)
-
-		downloadFilePart := "mysql-" + optVersion + "-" + myOS
+		downloadFilePart := "mysql-" + optVersion + "-" + getOS()
 		log.Println("downloadFilePart: " + downloadFilePart)
 
 		dataDir := versionDir + "/datadir/" + optName
@@ -79,12 +56,6 @@ var mysqlCreateCmd = &cobra.Command{
 
 		extractFile(versionDir, downloadFilePart)
 
-		err = os.Chdir(dbdbBaseDir)
-		if err != nil {
-			log.Println(err)
-		}
-
-		// mysqld initialize
 		mysqldCmd := exec.Command(
 			versionDir+"/basedir/bin/mysqld",
 			"--no-defaults",
@@ -100,46 +71,15 @@ var mysqlCreateCmd = &cobra.Command{
 		)
 
 		log.Println("mysqldCmd: " + mysqldCmd.String())
+		mysqldCmd.Run()
 
-		var stdout bytes.Buffer
-		var stderr bytes.Buffer
-		mysqldCmd.Stdout = &stdout
-		mysqldCmd.Stderr = &stderr
-		mysqldErr := mysqldCmd.Run()
-		if mysqldErr != nil {
-			log.Println("stdout: " + stdout.String())
-			log.Println(fmt.Sprint(mysqldErr) + ": " + stderr.String())
-			panic(mysqldErr)
-		}
+		portFile := versionDir + "/datadir/" + optName + "/mysql.port.init"
+		fileWrite(portFile, optPort)
+		log.Println("mysql.port.init:", portFile)
 
-		// mysql.port.init
-		mysqlPortFile, err := os.Create(versionDir + "/datadir/" + optName + "/mysql.port.init")
-		if err != nil {
-			panic(err)
-		}
-		defer mysqlPortFile.Close()
-		_, err = mysqlPortFile.WriteString(optPort)
-		if err != nil {
-			panic(err)
-		}
-
-		// my.cnf
-		myCnf, err := os.Create(versionDir + "/datadir/" + optName + "/my.cnf")
-		if err != nil {
-			panic(err)
-		}
-		defer myCnf.Close()
-		myCnfText := "[mysqld]\nbind-address = 127.0.0.1"
-		_, err = myCnf.WriteString(myCnfText)
-		if err != nil {
-			panic(err)
-		}
-		log.Println("my.cnf is here. " + versionDir + "/datadir/" + optName + "/my.cnf")
-
-		err = os.Chdir(dbdbBaseDir)
-		if err != nil {
-			log.Println(err)
-		}
+		confFile := versionDir + "/datadir/" + optName + "/my.cnf"
+		fileWrite(confFile, "[mysqld]\nbind-address = 127.0.0.1\n")
+		log.Println("my.cnf:", confFile)
 
 		log.Println(optName, "MySQL database successfully created.")
 		printUsage(optName, optVersion, optPort)
