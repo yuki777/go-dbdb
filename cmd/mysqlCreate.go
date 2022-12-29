@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
 
 	"github.com/spf13/cobra"
 )
@@ -17,6 +18,14 @@ var mysqlCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create mysql server",
 	Long:  `...`,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		optName := cmd.Flag("name").Value.String()
+		if !regexp.MustCompile(`^[0-9a-zA-Z-_.]+$`).MatchString(optName) {
+			log.Println("Error: Invalid arguments. use string, number and -_. for --name=" + optName)
+			cmd.Usage()
+			os.Exit(1)
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("mysqlCreate called")
 
