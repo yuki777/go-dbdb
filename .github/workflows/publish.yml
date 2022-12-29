@@ -28,7 +28,4 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            bin/go-dbdb-macos-amd64.$RELEASE_VERSION
-            bin/go-dbdb-macos-arm64.$RELEASE_VERSION
-            bin/go-dbdb-linux-amd64.$RELEASE_VERSION
-            bin/go-dbdb-linux-arm64.$RELEASE_VERSION
+            bin/go-dbdb-*
