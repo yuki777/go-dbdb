@@ -5,11 +5,14 @@ package cmd
 
 import (
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -53,7 +56,7 @@ func init() {
 	rootCmd.AddCommand(mysqlCmd)
 	// rootCmd.AddCommand(postgresqlCmd)
 	// rootCmd.AddCommand(redisCmd)
-	// rootCmd.AddCommand(mongodbCmd)
+	rootCmd.AddCommand(mongodbCmd)
 }
 
 func dbdbBaseDir() string {
@@ -94,6 +97,7 @@ func getOS() string {
 	} else if strings.HasPrefix(strings.ToLower(uname), "darwin") {
 		return "macos"
 	} else {
+		log.Println("unknown os")
 		os.Exit(1)
 		return "unknown"
 	}
@@ -183,8 +187,6 @@ func extractFile(dir string, filepart string) {
 
 func printUsage(optName string, optVersion string, optPort string) {
 	prefix := os.Args[0]
-	log.Println("prefix:", prefix)
-
 	log.Println("")
 	log.Println("# Start")
 	log.Println(prefix + " mysql start --name=" + optName)
@@ -204,4 +206,44 @@ func printUsage(optName string, optVersion string, optPort string) {
 	log.Println("# Delete")
 	log.Println(prefix + " mysql delete --name=" + optName)
 	log.Println("")
+}
+
+func getDataDirByName(optName string) string {
+	dbdbBaseDir := dbdbBaseDir()
+	pattern := dbdbBaseDir + "/mysql/versions/*/datadir/" + optName
+	files, err := filepath.Glob(pattern)
+	if len(files) != 1 {
+		log.Println("data directory not found.", pattern)
+		panic(err)
+	}
+
+	return files[0]
+}
+
+func getPortByName(optName string) string {
+	dataDir := getDataDirByName(optName)
+	mysqlPortInitFile := dataDir + "/mysql.port.init"
+
+	bytes, err := ioutil.ReadFile(mysqlPortInitFile)
+	if err != nil {
+		log.Println("unknown error on mysql.port.init file", mysqlPortInitFile)
+		panic(err)
+	}
+
+	return string(bytes)
+}
+
+func removeDir(dir string) {
+	err := os.RemoveAll(dir)
+	if err != nil {
+		log.Println("unknown error on removeDir", dir)
+		panic(err)
+	}
+}
+
+func validateOptName(optName string) bool {
+	if !regexp.MustCompile(`^[0-9a-zA-Z-_.]+$`).MatchString(optName) {
+		return false
+	}
+	return true
 }
