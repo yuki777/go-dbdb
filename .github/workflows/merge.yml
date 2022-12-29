@@ -21,6 +21,7 @@ jobs:
           ./bin/go-dbdb-macos-amd64
           ./bin/go-dbdb-macos-amd64 mysql
           ./bin/go-dbdb-macos-amd64 mysql create --name=mysql57 --version 5.7.31 --port 53306
+          ./bin/go-dbdb-macos-amd64 mysql delete --name=mysql57
       - name: Run mysql test on ubuntu
         if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
         run: |
@@ -28,3 +29,4 @@ jobs:
           ./bin/go-dbdb-linux-amd64
           ./bin/go-dbdb-linux-amd64 mysql
           ./bin/go-dbdb-linux-amd64 mysql create --name=mysql57 --version 5.7.31 --port 53306
+          ./bin/go-dbdb-linux-amd64 mysql delete --name=mysql57

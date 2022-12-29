@@ -5,11 +5,13 @@ package cmd
 
 import (
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -102,6 +104,13 @@ func getOS() string {
 func exitIfExistDir(checkDir string) {
 	if _, err := os.Stat(checkDir); !os.IsNotExist(err) {
 		log.Println(checkDir + " directory is already exist")
+		os.Exit(1)
+	}
+}
+
+func exitIfNotExistDir(checkDir string) {
+	if _, err := os.Stat(checkDir); os.IsNotExist(err) {
+		log.Println(checkDir + " directory is NOT exist")
 		os.Exit(1)
 	}
 }
@@ -204,4 +213,37 @@ func printUsage(optName string, optVersion string, optPort string) {
 	log.Println("# Delete")
 	log.Println(prefix + " mysql delete --name=" + optName)
 	log.Println("")
+}
+
+func getDataDirByName(optName string) string {
+	dbdbBaseDir := dbdbBaseDir()
+	pattern := dbdbBaseDir + "/mysql/versions/*/datadir/" + optName
+	files, err := filepath.Glob(pattern)
+	if len(files) != 1 {
+		log.Println("data directory not found.", pattern)
+		panic(err)
+	}
+
+	return files[0]
+}
+
+func getPortByName(optName string) string {
+	dataDir := getDataDirByName(optName)
+	mysqlPortInitFile := dataDir + "/mysql.port.init"
+
+	bytes, err := ioutil.ReadFile(mysqlPortInitFile)
+	if err != nil {
+		log.Println("unknown error on mysql.port.init file", mysqlPortInitFile)
+		panic(err)
+	}
+
+	return string(bytes)
+}
+
+func removeDir(dir string) {
+	err := os.RemoveAll(dir)
+	if err != nil {
+		log.Println("unknown error on removeDir", dir)
+		panic(err)
+	}
 }

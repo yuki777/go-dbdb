@@ -29,11 +29,11 @@ func init() {
 	// rootCmd.AddCommand(mysqlCmd)
 	mysqlCmd.AddCommand(mysqlCreateCmd)
 	mysqlCmd.AddCommand(mysqlStartCmd)
-	// mysqlCmd.AddCommand(stopCmd)
-	// mysqlCmd.AddCommand(restartCmd)
-	// mysqlCmd.AddCommand(statusCmd)
-	// mysqlCmd.AddCommand(connectCmd)
-	// mysqlCmd.AddCommand(deleteCmd)
+	// mysqlCmd.AddCommand(mysqlStopCmd)
+	// mysqlCmd.AddCommand(mysqlRestartCmd)
+	// mysqlCmd.AddCommand(mysqlStatusCmd)
+	// mysqlCmd.AddCommand(mysqlConnectCmd)
+	mysqlCmd.AddCommand(mysqlDeleteCmd)
 
 	// Here you will define your flags and configuration settings.
 

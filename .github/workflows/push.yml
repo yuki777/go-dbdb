@@ -22,3 +22,4 @@ jobs:
           go run main.go
           go run main.go mysql
           go run main.go mysql create --name=mysql57 --version 5.7.31 --port 53306
+          go run main.go mysql delete --name=mysql57

@@ -17,6 +17,14 @@ var mysqlCreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create mysql server",
 	Long:  `...`,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		optName := cmd.Flag("name").Value.String()
+		if !validateOptName(optName) {
+			log.Println("Error: Invalid arguments. use string, number and -_. for --name=" + optName)
+			cmd.Usage()
+			os.Exit(1)
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("mysqlCreate called")
 
@@ -38,17 +46,16 @@ var mysqlCreateCmd = &cobra.Command{
 		dbSocket := "/tmp/dbdb_mysql_" + optPort + ".sock"
 		log.Println("dbSocket: " + dbSocket)
 
-		dir := dbdbBaseDir + "/mysql/versions/" + optVersion
-		log.Println("dir: " + dir)
-
-		os.MkdirAll(dir, 0755)
+		versionDir := dbdbBaseDir + "/mysql/versions/" + optVersion
+		log.Println("versionDir: " + versionDir)
+		os.MkdirAll(versionDir, 0755)
 
 		beforeDir, err := os.Getwd()
 		if err != nil {
 		}
 		log.Println("Before directory: " + beforeDir)
 
-		err = os.Chdir(dir)
+		err = os.Chdir(versionDir)
 		if err != nil {
 			log.Println(err)
 		}
@@ -61,16 +68,16 @@ var mysqlCreateCmd = &cobra.Command{
 		downloadFilePart := "mysql-" + optVersion + "-" + myOS
 		log.Println("downloadFilePart: " + downloadFilePart)
 
-		checkDir := dir + "/datadir/" + optName
-		log.Println("checkDir: " + checkDir)
-		exitIfExistDir(checkDir)
+		dataDir := versionDir + "/datadir/" + optName
+		log.Println("dataDir: " + dataDir)
+		exitIfExistDir(dataDir)
 
 		exitIfRunningPort(optPort)
 
 		getUrlFileAs("https://dbdb.project8.jp/mysql/"+downloadFilePart+".tar.gz", downloadFilePart+".tar.gz")
-		os.MkdirAll(dir+"/datadir/"+optName, 0755)
+		os.MkdirAll(dataDir, 0755)
 
-		extractFile(dir, downloadFilePart)
+		extractFile(versionDir, downloadFilePart)
 
 		err = os.Chdir(dbdbBaseDir)
 		if err != nil {
@@ -79,17 +86,17 @@ var mysqlCreateCmd = &cobra.Command{
 
 		// mysqld initialize
 		mysqldCmd := exec.Command(
-			dir+"/basedir/bin/mysqld",
+			versionDir+"/basedir/bin/mysqld",
 			"--no-defaults",
 			"--initialize-insecure",
 			"--user="+dbUser,
 			"--port="+optPort,
 			"--socket="+dbSocket,
-			"--basedir="+dir+"/basedir",
-			"--plugin-dir="+dir+"/basedir/lib/plugin",
-			"--datadir="+dir+"/datadir/"+optName,
-			"--log-error="+dir+"/datadir/"+optName+"/mysqld.err",
-			"--pid-file="+dir+"/datadir/"+optName+"/mysql.pid",
+			"--basedir="+versionDir+"/basedir",
+			"--plugin-dir="+versionDir+"/basedir/lib/plugin",
+			"--datadir="+versionDir+"/datadir/"+optName,
+			"--log-error="+versionDir+"/datadir/"+optName+"/mysqld.err",
+			"--pid-file="+versionDir+"/datadir/"+optName+"/mysql.pid",
 		)
 
 		log.Println("mysqldCmd: " + mysqldCmd.String())
@@ -106,7 +113,7 @@ var mysqlCreateCmd = &cobra.Command{
 		}
 
 		// mysql.port.init
-		mysqlPortFile, err := os.Create(dir + "/datadir/" + optName + "/mysql.port.init")
+		mysqlPortFile, err := os.Create(versionDir + "/datadir/" + optName + "/mysql.port.init")
 		if err != nil {
 			panic(err)
 		}
@@ -117,7 +124,7 @@ var mysqlCreateCmd = &cobra.Command{
 		}
 
 		// my.cnf
-		myCnf, err := os.Create(dir + "/datadir/" + optName + "/my.cnf")
+		myCnf, err := os.Create(versionDir + "/datadir/" + optName + "/my.cnf")
 		if err != nil {
 			panic(err)
 		}
@@ -127,13 +134,14 @@ var mysqlCreateCmd = &cobra.Command{
 		if err != nil {
 			panic(err)
 		}
-		log.Println("my.cnf is here. " + dir + "/datadir/" + optName + "/my.cnf")
+		log.Println("my.cnf is here. " + versionDir + "/datadir/" + optName + "/my.cnf")
 
 		err = os.Chdir(dbdbBaseDir)
 		if err != nil {
 			log.Println(err)
 		}
 
+		log.Println(optName, "MySQL database successfully created.")
 		printUsage(optName, optVersion, optPort)
 	},
 }
