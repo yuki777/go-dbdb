@@ -10,23 +10,19 @@ jobs:
   test-on-merge:
     strategy:
       matrix:
-        os: [macos-11, macos-12, ubuntu-20.04, ubuntu-22.04]
+        os: [macos-12, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: Run mysql test on macos
-        if: matrix.os == 'macos-11' || matrix.os == 'macos-12'
+      - name: Build and run on macos
+        if: matrix.os == 'macos-12'
         run: |
           GOOS=darwin GOARCH=amd64 go build -o bin/go-dbdb-macos-amd64
-          ./bin/go-dbdb-macos-amd64
-          ./bin/go-dbdb-macos-amd64 mysql
           ./bin/go-dbdb-macos-amd64 mysql create --name=mysql57 --version 5.7.31 --port 53306
           ./bin/go-dbdb-macos-amd64 mysql delete --name=mysql57
-      - name: Run mysql test on ubuntu
-        if: matrix.os == 'ubuntu-20.04' || matrix.os == 'ubuntu-22.04'
+      - name: Build and run on ubuntu
+        if: matrix.os == 'ubuntu-22.04'
         run: |
           GOOS=linux GOARCH=amd64 go build -o bin/go-dbdb-linux-amd64
-          ./bin/go-dbdb-linux-amd64
-          ./bin/go-dbdb-linux-amd64 mysql
           ./bin/go-dbdb-linux-amd64 mysql create --name=mysql57 --version 5.7.31 --port 53306
           ./bin/go-dbdb-linux-amd64 mysql delete --name=mysql57

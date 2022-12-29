@@ -13,13 +13,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       # - name: Setup debug session
       #   uses: mxschmitt/action-tmate@v3
-      - name: Run mysql test
+
+      - name: Print uname and version
         run: |
           uname -a
           go version
+
+      - name: Run mysql test
+        run: |
           go run main.go
           go run main.go mysql
           go run main.go mysql create --name=mysql57 --version 5.7.31 --port 53306
           go run main.go mysql delete --name=mysql57
+
+      - name: Run mongodb test
+        run: |
+          go run main.go
+          go run main.go mongodb

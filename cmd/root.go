@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -55,7 +56,7 @@ func init() {
 	rootCmd.AddCommand(mysqlCmd)
 	// rootCmd.AddCommand(postgresqlCmd)
 	// rootCmd.AddCommand(redisCmd)
-	// rootCmd.AddCommand(mongodbCmd)
+	rootCmd.AddCommand(mongodbCmd)
 }
 
 func dbdbBaseDir() string {
@@ -96,6 +97,7 @@ func getOS() string {
 	} else if strings.HasPrefix(strings.ToLower(uname), "darwin") {
 		return "macos"
 	} else {
+		log.Println("unknown os")
 		os.Exit(1)
 		return "unknown"
 	}
@@ -192,8 +194,6 @@ func extractFile(dir string, filepart string) {
 
 func printUsage(optName string, optVersion string, optPort string) {
 	prefix := os.Args[0]
-	log.Println("prefix:", prefix)
-
 	log.Println("")
 	log.Println("# Start")
 	log.Println(prefix + " mysql start --name=" + optName)
@@ -246,4 +246,11 @@ func removeDir(dir string) {
 		log.Println("unknown error on removeDir", dir)
 		panic(err)
 	}
+}
+
+func validateOptName(optName string) bool {
+	if !regexp.MustCompile(`^[0-9a-zA-Z-_.]+$`).MatchString(optName) {
+		return false
+	}
+	return true
 }
