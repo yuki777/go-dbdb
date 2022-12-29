@@ -110,6 +110,13 @@ func exitIfExistDir(checkDir string) {
 	}
 }
 
+func exitIfNotExistDir(checkDir string) {
+	if _, err := os.Stat(checkDir); os.IsNotExist(err) {
+		log.Println(checkDir + " directory is NOT exist")
+		os.Exit(1)
+	}
+}
+
 func exitIfRunningPort(port string) {
 	cmd := exec.Command("nc", "-z", "127.0.0.1", port)
 	cmd.Run()
