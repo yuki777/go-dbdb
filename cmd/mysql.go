@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// mysqlCmd represents the mysql command
 var mysqlCmd = &cobra.Command{
 	Use:   "mysql",
 	Short: "..",

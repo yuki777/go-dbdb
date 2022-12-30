@@ -25,28 +25,21 @@ var mysqlCreateCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		dbdbBaseDir := dbdbBaseDir()
-		log.Println("dbdbBaseDir: " + dbdbBaseDir)
 
 		optName := cmd.Flag("name").Value.String()
 		optVersion := cmd.Flag("version").Value.String()
 		optPort := cmd.Flag("port").Value.String()
-		log.Println("optName: " + optName)
-		log.Println("optVersion : " + optVersion)
-		log.Println("optPort: " + optPort)
 
 		dbUser := "_dbdb_mysql"
 		dbSocket := "/tmp/dbdb_mysql_" + optPort + ".sock"
 
 		versionDir := dbdbBaseDir + "/mysql/versions/" + optVersion
-		log.Println("versionDir: " + versionDir)
 		os.MkdirAll(versionDir, 0755)
 		os.Chdir(versionDir)
 
 		downloadFilePart := "mysql-" + optVersion + "-" + getOS()
-		log.Println("downloadFilePart: " + downloadFilePart)
 
 		dataDir := versionDir + "/datadir/" + optName
-		log.Println("dataDir: " + dataDir)
 		exitIfExistDir(dataDir)
 
 		exitIfRunningPort(optPort)
@@ -87,12 +80,6 @@ var mysqlCreateCmd = &cobra.Command{
 }
 
 func init() {
-	//rootCmd.AddCommand(mysqlCreateCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
 	mysqlCreateCmd.PersistentFlags().String("name", "", "Name for database (required)")
 	mysqlCreateCmd.PersistentFlags().String("version", "", "Version for database (required)")
 	mysqlCreateCmd.PersistentFlags().String("port", "", "Port for database (required)")
@@ -100,8 +87,4 @@ func init() {
 	mysqlCreateCmd.MarkPersistentFlagRequired("name")
 	mysqlCreateCmd.MarkPersistentFlagRequired("version")
 	mysqlCreateCmd.MarkPersistentFlagRequired("port")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// mysqlCreateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
