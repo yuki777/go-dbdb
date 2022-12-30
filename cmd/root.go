@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
@@ -125,6 +126,17 @@ func exitIfRunningPort(port string) {
 	if exitCode == 0 {
 		log.Println(port + " is already in use")
 		os.Exit(1)
+	}
+}
+
+func exitIfNotRunningPort(port string) {
+	conn, err := net.Dial("tcp", "localhost:"+port)
+	if err != nil {
+		log.Println(port, "is NOT available")
+		os.Exit(1)
+	} else {
+		log.Println(port, "is available")
+		conn.Close()
 	}
 }
 
