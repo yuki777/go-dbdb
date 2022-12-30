@@ -20,7 +20,7 @@ var mysqlDeleteCmd = &cobra.Command{
 		optName := cmd.Flag("name").Value.String()
 		log.Println("optName: " + optName)
 
-		dataDir := getDataDirByName(optName)
+		dataDir := getDataDirByName(optName, "mysql")
 		log.Println("dataDir:", dataDir)
 		exitIfNotExistDir(dataDir)
 

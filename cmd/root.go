@@ -215,9 +215,9 @@ func printUsage(optName string, optVersion string, optPort string) {
 	log.Println("")
 }
 
-func getDataDirByName(optName string) string {
+func getDataDirByName(optName string, dbType string) string {
 	dbdbBaseDir := dbdbBaseDir()
-	pattern := dbdbBaseDir + "/mysql/versions/*/datadir/" + optName
+	pattern := dbdbBaseDir + "/" + dbType + "/versions/*/datadir/" + optName
 	files, err := filepath.Glob(pattern)
 	if len(files) != 1 {
 		log.Println("data directory not found.", pattern)
@@ -227,8 +227,21 @@ func getDataDirByName(optName string) string {
 	return files[0]
 }
 
+func getVersionByDataDir(dataDir string, optName string, dbType string) string {
+	dbdbBaseDir := dbdbBaseDir()
+	r, err := regexp.Compile(dbdbBaseDir + "/" + dbType + "/versions/(.+)/datadir/" + optName)
+	submatch := r.FindStringSubmatch(dataDir)
+
+	if len(submatch) != 2 {
+		log.Println("unknown error on getVersionByDataDir()", dataDir, optName, dbType)
+		panic(err)
+	}
+
+	return submatch[1]
+}
+
 func getPortByName(optName string) string {
-	dataDir := getDataDirByName(optName)
+	dataDir := getDataDirByName(optName, "mysql")
 	mysqlPortInitFile := dataDir + "/mysql.port.init"
 
 	bytes, err := ioutil.ReadFile(mysqlPortInitFile)
