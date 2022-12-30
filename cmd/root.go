@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
@@ -125,6 +126,17 @@ func exitIfRunningPort(port string) {
 	if exitCode == 0 {
 		log.Println(port + " is already in use")
 		os.Exit(1)
+	}
+}
+
+func exitIfNotRunningPort(port string) {
+	conn, err := net.Dial("tcp", "localhost:"+port)
+	if err != nil {
+		log.Println(port, "is NOT available")
+		os.Exit(1)
+	} else {
+		log.Println(port, "is available")
+		conn.Close()
 	}
 }
 
@@ -277,5 +289,24 @@ func fileWrite(path string, content string) {
 	_, err = mysqlPortFile.WriteString(content)
 	if err != nil {
 		panic(err)
+	}
+}
+
+func copyFile(source string, dest string) {
+	inputFile, err := os.Open(source)
+	if err != nil {
+		log.Println("unknown error on inputFile:", inputFile)
+	}
+	defer inputFile.Close()
+
+	outputFile, err := os.Create(dest)
+	if err != nil {
+		log.Println("unknown error on outputFile:", outputFile)
+	}
+	defer outputFile.Close()
+
+	_, err = io.Copy(outputFile, inputFile)
+	if err != nil {
+		log.Println("unknown error on copy:", inputFile, outputFile)
 	}
 }

@@ -10,12 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var mysqlDeleteCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "Delete mysql server",
+var mysqlStopCmd = &cobra.Command{
+	Use:   "stop",
+	Short: "Stop mysql server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
 		dbdbBaseDir := dbdbBaseDir()
+		log.Println("dbdbBaseDir: " + dbdbBaseDir)
 
 		optName := cmd.Flag("name").Value.String()
 		log.Println("optName: " + optName)
@@ -29,6 +30,7 @@ var mysqlDeleteCmd = &cobra.Command{
 
 		dbPort := getPortByName(optName)
 		log.Println("dbPort:", dbPort)
+		exitIfNotRunningPort(dbPort)
 
 		dbSocket := "/tmp/dbdb_mysql_" + dbPort + ".sock"
 
@@ -46,28 +48,17 @@ var mysqlDeleteCmd = &cobra.Command{
 		log.Println("mysqldCmd: " + mysqlAdminCmd.String())
 		mysqlAdminCmd.Run()
 
-		exitIfNotExistDir(dataDir)
-		exitIfRunningPort(dbPort)
+		source := dataDir + "/mysql.port"
+		dest := dataDir + "/mysql.port.last"
+		copyFile(source, dest)
 
-		removeDir(dataDir)
-		log.Println("data directory deleted. ", dataDir)
+		removeDir(dataDir + "/mysql.port")
 
-		log.Println(optName, "MySQL database successfully deleted.")
+		log.Println(optName, "MySQL database successfully stopped.")
 	},
 }
 
 func init() {
-	//rootCmd.AddCommand(mysqlCreateCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	mysqlDeleteCmd.PersistentFlags().String("name", "", "Name for database (required)")
-
-	mysqlDeleteCmd.MarkPersistentFlagRequired("name")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// mysqlCreateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	mysqlStopCmd.PersistentFlags().String("name", "", "Name for database (required)")
+	mysqlStopCmd.MarkPersistentFlagRequired("name")
 }

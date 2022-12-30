@@ -27,6 +27,8 @@ jobs:
           go run main.go
           go run main.go mysql
           go run main.go mysql create --name=mysql57 --version 5.7.31 --port 53306
+          go run main.go mysql start  --name=mysql57
+          go run main.go mysql stop   --name=mysql57
           go run main.go mysql delete --name=mysql57
 
       - name: Run mongodb test
