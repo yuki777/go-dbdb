@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"log"
+	"os/exec"
 
 	"github.com/spf13/cobra"
 )
@@ -15,7 +16,6 @@ var mysqlDeleteCmd = &cobra.Command{
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
 		dbdbBaseDir := dbdbBaseDir()
-		log.Println("dbdbBaseDir: " + dbdbBaseDir)
 
 		optName := cmd.Flag("name").Value.String()
 		log.Println("optName: " + optName)
@@ -24,14 +24,33 @@ var mysqlDeleteCmd = &cobra.Command{
 		log.Println("dataDir:", dataDir)
 		exitIfNotExistDir(dataDir)
 
-		port := getPortByName(optName)
-		log.Println("port:", port)
-		exitIfRunningPort(port)
+		version := getVersionByDataDir(dataDir, optName, "mysql")
+		log.Println("version:", version)
+
+		dbPort := getPortByName(optName)
+		log.Println("dbPort:", dbPort)
+
+		dbSocket := "/tmp/dbdb_mysql_" + dbPort + ".sock"
+
+		versionDir := dbdbBaseDir + "/mysql/versions/" + version
+		log.Println("versionDir:", versionDir)
+
+		mysqlAdminCmd := exec.Command(
+			versionDir+"/basedir/bin/mysqladmin",
+			"--user=root",
+			"--host=localhost",
+			"--port="+dbPort,
+			"--socket="+dbSocket,
+			"shutdown",
+		)
+		log.Println("mysqldCmd: " + mysqlAdminCmd.String())
+		mysqlAdminCmd.Run()
+
+		exitIfNotExistDir(dataDir)
+		exitIfRunningPort(dbPort)
 
 		removeDir(dataDir)
 		log.Println("data directory deleted. ", dataDir)
-
-		// TODO ./stop.sh $optName $optVersion $optPort
 
 		log.Println(optName, "MySQL database successfully deleted.")
 	},

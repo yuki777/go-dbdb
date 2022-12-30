@@ -291,3 +291,22 @@ func fileWrite(path string, content string) {
 		panic(err)
 	}
 }
+
+func copyFile(source string, dest string) {
+	inputFile, err := os.Open(source)
+	if err != nil {
+		log.Println("unknown error on inputFile:", inputFile)
+	}
+	defer inputFile.Close()
+
+	outputFile, err := os.Create(dest)
+	if err != nil {
+		log.Println("unknown error on outputFile:", outputFile)
+	}
+	defer outputFile.Close()
+
+	_, err = io.Copy(outputFile, inputFile)
+	if err != nil {
+		log.Println("unknown error on copy:", inputFile, outputFile)
+	}
+}
