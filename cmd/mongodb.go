@@ -18,7 +18,7 @@ var mongodbCmd = &cobra.Command{
 		if len(args) == 0 {
 			log.Println("The name argument is required")
 			cmd.Help()
-			os.Exit(1)
+			os.Exit(0)
 		}
 		log.Println("mongodb called")
 	},

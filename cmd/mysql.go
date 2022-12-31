@@ -19,7 +19,7 @@ var mysqlCmd = &cobra.Command{
 		if len(args) == 0 {
 			log.Println("The name argument is required")
 			cmd.Help()
-			os.Exit(1)
+			os.Exit(0)
 		}
 		log.Println("mysql called")
 	},
