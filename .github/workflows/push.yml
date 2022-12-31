@@ -22,16 +22,22 @@ jobs:
           uname -a
           go version
 
-      - name: Run mysql test
+      - name: Run basic commands
         run: |
           go run main.go
           go run main.go mysql
-          go run main.go mysql create --name=mysql57 --version 5.7.31 --port 53306
-          go run main.go mysql start  --name=mysql57
-          go run main.go mysql stop   --name=mysql57
-          go run main.go mysql delete --name=mysql57
-
-      - name: Run mongodb test
-        run: |
-          go run main.go
           go run main.go mongodb
+
+      - name: Run mysql commands
+        run: |
+          go run main.go mysql create       --name=mysql57 --version 5.7.31 --port 53306
+          go run main.go mysql start        --name=mysql57
+          go run main.go mysql stop         --name=mysql57
+          go run main.go mysql restart      --name=mysql57
+          go run main.go mysql delete       --name=mysql57
+          go run main.go mysql create-start --name=mysql57 --version 5.7.31 --port 53306
+          go run main.go mysql delete       --name=mysql57
+
+      - name: Run mongodb commands
+        run: |
+          go run main.go mongodb create --name=mongodb4 --version=4.4.10 --port 27017
