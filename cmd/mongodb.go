@@ -20,7 +20,6 @@ var mongodbCmd = &cobra.Command{
 			cmd.Help()
 			os.Exit(0)
 		}
-		log.Println("mongodb called")
 	},
 }
 
