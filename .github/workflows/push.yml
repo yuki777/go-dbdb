@@ -40,4 +40,10 @@ jobs:
 
       - name: Run mongodb commands
         run: |
-          go run main.go mongodb create --name=mongodb4 --version=4.4.10 --port 27017
+          go run main.go mongodb create       --name=mongodb4 --version=4.4.10 --port 27017
+          go run main.go mongodb start        --name=mongodb4
+          go run main.go mongodb stop         --name=mongodb4
+          go run main.go mongodb restart      --name=mongodb4
+          go run main.go mongodb delete       --name=mongodb4
+          go run main.go mongodb create-start --name=mongodb4 --version=4.4.10 --port 27017
+          go run main.go mongodb delete       --name=mongodb4
