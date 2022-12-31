@@ -23,7 +23,7 @@ var mongodbCreateCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("mongodbCreate called")
+		mongodbCreate(cmd)
 	},
 }
 
@@ -31,7 +31,6 @@ func init() {
 	mongodbCreateCmd.PersistentFlags().String("name", "", "Name for database (required)")
 	mongodbCreateCmd.PersistentFlags().String("version", "", "Version for database (required)")
 	mongodbCreateCmd.PersistentFlags().String("port", "", "Port for database (required)")
-
 	mongodbCreateCmd.MarkPersistentFlagRequired("name")
 	mongodbCreateCmd.MarkPersistentFlagRequired("version")
 	mongodbCreateCmd.MarkPersistentFlagRequired("port")

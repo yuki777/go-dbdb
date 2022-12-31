@@ -18,7 +18,7 @@ var mongodbCmd = &cobra.Command{
 		if len(args) == 0 {
 			log.Println("The name argument is required")
 			cmd.Help()
-			os.Exit(0)
+			os.Exit(1)
 		}
 		log.Println("mongodb called")
 	},
@@ -32,4 +32,8 @@ func init() {
 	// mongodbCmd.AddCommand(mongodbStatusCmd)
 	// mongodbCmd.AddCommand(mongodbConnectCmd)
 	// mongodbCmd.AddCommand(mongodbDeleteCmd)
+}
+
+func mongodbCreate(cmd *cobra.Command) {
+
 }
