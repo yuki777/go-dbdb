@@ -35,5 +35,5 @@ func init() {
 }
 
 func mongodbCreate(cmd *cobra.Command) {
-
+	log.Println("mongodbCreate() called")
 }
