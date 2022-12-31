@@ -28,9 +28,7 @@ func init() {
 	mysqlCmd.AddCommand(mysqlCreateCmd)
 	mysqlCmd.AddCommand(mysqlStartCmd)
 	mysqlCmd.AddCommand(mysqlStopCmd)
-	// mysqlCmd.AddCommand(mysqlRestartCmd)
-	// mysqlCmd.AddCommand(mysqlStatusCmd)
-	// mysqlCmd.AddCommand(mysqlConnectCmd)
+	mysqlCmd.AddCommand(mysqlRestartCmd)
 	mysqlCmd.AddCommand(mysqlDeleteCmd)
 	mysqlCmd.AddCommand(mysqlCreateStartCmd)
 }
@@ -136,7 +134,7 @@ func mysqlStart(cmd *cobra.Command) {
 	log.Println(optName, "MySQL database successfully started.")
 }
 
-func mysqlStop(cmd *cobra.Command) {
+func mysqlStop(cmd *cobra.Command, isRestart bool) {
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -147,7 +145,9 @@ func mysqlStop(cmd *cobra.Command) {
 	version := getVersionByDataDir(dataDir, optName, "mysql")
 
 	dbPort := getPortByName(optName)
-	exitIfNotRunningPort(dbPort)
+	if !isRestart {
+		exitIfNotRunningPort(dbPort)
+	}
 
 	dbSocket := "/tmp/dbdb_mysql_" + dbPort + ".sock"
 
