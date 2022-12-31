@@ -7,6 +7,9 @@ on:
 
 jobs:
   release:
+    needs:
+      - test-on-push
+      - test-on-merge
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
