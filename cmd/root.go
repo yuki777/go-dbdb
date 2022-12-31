@@ -14,6 +14,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -252,23 +253,23 @@ func getVersionByDataDir(dataDir string, optName string, dbType string) string {
 	return submatch[1]
 }
 
-func getPortByName(optName string) string {
-	dataDir := getDataDirByName(optName, "mysql")
-	mysqlPortInitFile := dataDir + "/mysql.port.init"
+func getPortByName(optName string, dbType string) string {
+	dataDir := getDataDirByName(optName, dbType)
+	portInitFile := dataDir + "/" + dbType + ".port.init"
 
-	bytes, err := ioutil.ReadFile(mysqlPortInitFile)
+	bytes, err := ioutil.ReadFile(portInitFile)
 	if err != nil {
-		log.Println("unknown error on mysql.port.init file", mysqlPortInitFile)
+		log.Println("unknown error on", dbType, ".port.init file", portInitFile)
 		panic(err)
 	}
 
 	return string(bytes)
 }
 
-func removeDir(dir string) {
+func remove(dir string) {
 	err := os.RemoveAll(dir)
 	if err != nil {
-		log.Println("unknown error on removeDir", dir)
+		log.Println("unknown error on remove", dir)
 		panic(err)
 	}
 }
@@ -278,6 +279,16 @@ func validateOptName(optName string) bool {
 		return false
 	}
 	return true
+}
+
+func fileRead(path string) string {
+	bytes, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Println("unknown error on fileRead()", path)
+		panic(err)
+	}
+
+	return string(bytes)
 }
 
 func fileWrite(path string, content string) {
@@ -309,4 +320,13 @@ func copyFile(source string, dest string) {
 	if err != nil {
 		log.Println("unknown error on copy:", inputFile, outputFile)
 	}
+}
+
+func pidStringToPidInt(pidString string) int {
+	pidInt, err := strconv.Atoi(strings.ReplaceAll(pidString, "\n", ""))
+	if err != nil {
+		log.Println("Error on pidStringToPidInt()", err)
+	}
+
+	return pidInt
 }

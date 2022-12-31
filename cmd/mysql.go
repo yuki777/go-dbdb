@@ -98,12 +98,11 @@ func mysqlStart(cmd *cobra.Command) {
 
 	version := getVersionByDataDir(dataDir, optName, "mysql")
 
-	port := getPortByName(optName)
-	exitIfRunningPort(port)
+	dbPort := getPortByName(optName, "mysql")
+	exitIfRunningPort(dbPort)
 
 	versionDir := dbdbBaseDir + "/mysql/versions/" + version
 
-	dbPort := getPortByName(optName)
 	dbUser := "_dbdb_mysql"
 	dbSocket := "/tmp/dbdb_mysql_" + dbPort + ".sock"
 
@@ -124,17 +123,17 @@ func mysqlStart(cmd *cobra.Command) {
 	log.Println("mysqldCmd: " + mysqldCmd.String())
 	mysqldCmd.Run()
 
-	mysqlPortFile := dataDir + "/mysql.port"
-	log.Println("mysqlPortFile:", mysqlPortFile)
-	fileWrite(mysqlPortFile, dbPort)
+	portFile := dataDir + "/mysql.port"
+	log.Println("portFile:", portFile)
+	fileWrite(portFile, dbPort)
 
-	myConfFile := dataDir + "/my.cnf"
-	log.Println("Your config file is located:", myConfFile)
+	confFile := dataDir + "/my.cnf"
+	log.Println("Your config file is located:", confFile)
 
 	log.Println(optName, "MySQL database successfully started.")
 }
 
-func mysqlStop(cmd *cobra.Command, isRestart bool) {
+func mysqlStop(cmd *cobra.Command, ignoreError bool) {
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -144,8 +143,8 @@ func mysqlStop(cmd *cobra.Command, isRestart bool) {
 
 	version := getVersionByDataDir(dataDir, optName, "mysql")
 
-	dbPort := getPortByName(optName)
-	if !isRestart {
+	dbPort := getPortByName(optName, "mysql")
+	if !ignoreError {
 		exitIfNotRunningPort(dbPort)
 	}
 
@@ -168,42 +167,21 @@ func mysqlStop(cmd *cobra.Command, isRestart bool) {
 	dest := dataDir + "/mysql.port.last"
 	copyFile(source, dest)
 
-	removeDir(dataDir + "/mysql.port")
+	remove(dataDir + "/mysql.port")
 
 	log.Println(optName, "MySQL database successfully stopped.")
 }
 
 func mysqlDelete(cmd *cobra.Command) {
-	dbdbBaseDir := dbdbBaseDir()
-
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "mysql")
 	exitIfNotExistDir(dataDir)
 
-	version := getVersionByDataDir(dataDir, optName, "mysql")
-
-	dbPort := getPortByName(optName)
-
-	dbSocket := "/tmp/dbdb_mysql_" + dbPort + ".sock"
-
-	versionDir := dbdbBaseDir + "/mysql/versions/" + version
-
-	mysqlAdminCmd := exec.Command(
-		versionDir+"/basedir/bin/mysqladmin",
-		"--user=root",
-		"--host=localhost",
-		"--port="+dbPort,
-		"--socket="+dbSocket,
-		"shutdown",
-	)
-	log.Println("mysqldCmd: " + mysqlAdminCmd.String())
-	mysqlAdminCmd.Run()
-
-	exitIfNotExistDir(dataDir)
+	dbPort := getPortByName(optName, "mysql")
 	exitIfRunningPort(dbPort)
 
-	removeDir(dataDir)
+	remove(dataDir)
 	log.Println("data directory deleted. ", dataDir)
 
 	log.Println(optName, "MySQL database successfully deleted.")
