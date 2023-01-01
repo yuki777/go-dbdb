@@ -32,6 +32,11 @@ jobs:
           ./bin/go-dbdb-macos-amd64 mongodb stop    --name=mongodb4
           ./bin/go-dbdb-macos-amd64 mongodb restart --name=mongodb4
           ./bin/go-dbdb-macos-amd64 mongodb delete  --name=mongodb4
+          ./bin/go-dbdb-macos-amd64 postgresql create  --name=pg124 --version=12.4 --port=54321
+          ./bin/go-dbdb-macos-amd64 postgresql start   --name=pg124
+          ./bin/go-dbdb-macos-amd64 postgresql stop    --name=pg124
+          ./bin/go-dbdb-macos-amd64 postgresql restart --name=pg124
+          ./bin/go-dbdb-macos-amd64 postgresql delete  --name=pg124
       - name: Build and run on ubuntu
         if: matrix.os == 'ubuntu-22.04'
         run: |
@@ -46,3 +51,8 @@ jobs:
           ./bin/go-dbdb-linux-amd64 mongodb stop    --name=mongodb4
           ./bin/go-dbdb-linux-amd64 mongodb restart --name=mongodb4
           ./bin/go-dbdb-linux-amd64 mongodb delete  --name=mongodb4
+          ./bin/go-dbdb-linux-amd64 postgresql create  --name=pg124 --version=12.4 --port=54321
+          ./bin/go-dbdb-linux-amd64 postgresql start   --name=pg124
+          ./bin/go-dbdb-linux-amd64 postgresql stop    --name=pg124
+          ./bin/go-dbdb-linux-amd64 postgresql restart --name=pg124
+          ./bin/go-dbdb-linux-amd64 postgresql delete  --name=pg124
