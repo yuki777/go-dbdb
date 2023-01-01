@@ -56,7 +56,7 @@ func postgresqlCreate(cmd *cobra.Command) {
 
 	extractFile(versionDir, downloadFilePart)
 
-	postgresqlInstallForLinux(versionDir + "/basedir/bin")
+	postgresqlInstallForLinux(versionDir)
 
 	createCmd := exec.Command(
 		versionDir+"/basedir/bin/initdb",
