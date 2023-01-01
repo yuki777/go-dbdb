@@ -64,11 +64,11 @@ func mongodbCreate(cmd *cobra.Command) {
 
 	extractFile(versionDir, downloadFilePart)
 
-	portFile := versionDir + "/datadir/" + optName + "/mongodb.port.init"
+	portFile := dataDir + "/mongodb.port.init"
 	fileWrite(portFile, optPort)
 	log.Println("mongodb.port.init:", portFile)
 
-	confFile := versionDir + "/datadir/" + optName + "/mongod.conf"
+	confFile := dataDir + "/mongod.conf"
 	fileWrite(confFile, "#mongod.conf\n")
 	log.Println("mongod.conf:", confFile)
 
@@ -123,8 +123,6 @@ func mongodbStart(cmd *cobra.Command) {
 }
 
 func mongodbStop(cmd *cobra.Command, checkPort bool) {
-	dbdbBaseDir := dbdbBaseDir()
-
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "mongodb")
@@ -134,19 +132,11 @@ func mongodbStop(cmd *cobra.Command, checkPort bool) {
 		os.Exit(1)
 	}
 
-	version := getVersionByDataDir(dataDir, optName, "mongodb")
-
 	dbPort := getPortByName(optName, "mongodb")
 	if checkPort && isNotRunningPort(dbPort) {
 		log.Println(dbPort, "is NOT available")
 		os.Exit(1)
 	}
-
-	dbSocket := "/tmp/dbdb_mongodb_" + dbPort + ".sock"
-	log.Println("dbSocket", dbSocket)
-
-	versionDir := dbdbBaseDir + "/mongodb/versions/" + version
-	log.Println("versionDir", versionDir)
 
 	pid := pidStringToPidInt(fileRead(dataDir + "/mongodb.pid"))
 	syscall.Kill(pid, syscall.SIGTERM)
