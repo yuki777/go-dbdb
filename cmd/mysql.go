@@ -145,10 +145,7 @@ func mysqlStop(cmd *cobra.Command, checkPort bool) {
 
 	dbPort := getPortByName(optName, "mysql")
 	if checkPort {
-		log.Println("exitIfNotRunningPort()", dbPort)
 		exitIfNotRunningPort(dbPort)
-	} else {
-		log.Println("exitIfNotRunningPort() will not be executed.")
 	}
 
 	dbSocket := "/tmp/dbdb_mysql_" + dbPort + ".sock"

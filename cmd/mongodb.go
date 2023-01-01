@@ -119,10 +119,7 @@ func mongodbStop(cmd *cobra.Command, checkPort bool) {
 
 	dbPort := getPortByName(optName, "mongodb")
 	if checkPort {
-		log.Println("exitIfNotRunningPort()", dbPort)
 		exitIfNotRunningPort(dbPort)
-	} else {
-		log.Println("exitIfNotRunningPort() will not be executed.")
 	}
 
 	dbSocket := "/tmp/dbdb_mongodb_" + dbPort + ".sock"

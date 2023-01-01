@@ -178,10 +178,7 @@ func postgresqlStop(cmd *cobra.Command, checkPort bool) {
 
 	dbPort := getPortByName(optName, "postgresql")
 	if checkPort {
-		log.Println("exitIfNotRunningPort()", dbPort)
 		exitIfNotRunningPort(dbPort)
-	} else {
-		log.Println("exitIfNotRunningPort() will not be executed.")
 	}
 
 	versionDir := dbdbBaseDir + "/postgresql/versions/" + version
