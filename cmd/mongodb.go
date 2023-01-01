@@ -48,9 +48,16 @@ func mongodbCreate(cmd *cobra.Command) {
 	downloadFilePart := "mongodb-" + optVersion + "-" + getOS()
 
 	dataDir := versionDir + "/datadir/" + optName
-	exitIfExistDir(dataDir)
 
-	exitIfRunningPort(optPort)
+	if exists(dataDir) {
+		log.Println(dataDir + " directory is already exist")
+		os.Exit(1)
+	}
+
+	if isRunningPort(optPort) {
+		log.Println(optPort, "is already in use")
+		os.Exit(1)
+	}
 
 	getUrlFileAs("https://dbdb.project8.jp/mongodb/"+downloadFilePart+".tar.gz", downloadFilePart+".tar.gz")
 	os.MkdirAll(dataDir, 0755)
@@ -75,12 +82,20 @@ func mongodbStart(cmd *cobra.Command) {
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "mongodb")
-	exitIfNotExistDir(dataDir)
+
+	if notExists(dataDir) {
+		log.Println(dataDir + " directory is NOT exist")
+		os.Exit(1)
+	}
 
 	version := getVersionByDataDir(dataDir, optName, "mongodb")
 
 	dbPort := getPortByName(optName, "mongodb")
-	exitIfRunningPort(dbPort)
+
+	if isRunningPort(dbPort) {
+		log.Println(dbPort, "is already in use")
+		os.Exit(1)
+	}
 
 	versionDir := dbdbBaseDir + "/mongodb/versions/" + version
 
@@ -113,13 +128,18 @@ func mongodbStop(cmd *cobra.Command, checkPort bool) {
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "mongodb")
-	exitIfNotExistDir(dataDir)
+
+	if notExists(dataDir) {
+		log.Println(dataDir + " directory is NOT exist")
+		os.Exit(1)
+	}
 
 	version := getVersionByDataDir(dataDir, optName, "mongodb")
 
 	dbPort := getPortByName(optName, "mongodb")
-	if checkPort {
-		exitIfNotRunningPort(dbPort)
+	if checkPort && isNotRunningPort(dbPort) {
+		log.Println(dbPort, "is NOT available")
+		os.Exit(1)
 	}
 
 	dbSocket := "/tmp/dbdb_mongodb_" + dbPort + ".sock"
@@ -143,10 +163,18 @@ func mongodbDelete(cmd *cobra.Command) {
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "mongodb")
-	exitIfNotExistDir(dataDir)
+
+	if notExists(dataDir) {
+		log.Println(dataDir + " directory is NOT exist")
+		os.Exit(1)
+	}
 
 	dbPort := getPortByName(optName, "mongodb")
-	exitIfRunningPort(dbPort)
+
+	if isRunningPort(dbPort) {
+		log.Println(dbPort, "is already in use")
+		os.Exit(1)
+	}
 
 	remove(dataDir)
 	log.Println("data directory deleted. ", dataDir)

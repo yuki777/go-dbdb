@@ -47,9 +47,15 @@ func postgresqlCreate(cmd *cobra.Command) {
 	downloadFilePart := "postgresql-" + optVersion + "-" + getOS()
 
 	dataDir := versionDir + "/datadir/" + optName
-	exitIfExistDir(dataDir)
+	if exists(dataDir) {
+		log.Println(dataDir + " directory is already exist")
+		os.Exit(1)
+	}
 
-	exitIfRunningPort(optPort)
+	if isRunningPort(optPort) {
+		log.Println(optPort, "is already in use")
+		os.Exit(1)
+	}
 
 	getUrlFileAs("https://dbdb.project8.jp/postgresql/"+downloadFilePart+".tar.gz", downloadFilePart+".tar.gz")
 	os.MkdirAll(dataDir, 0755)
@@ -135,12 +141,20 @@ func postgresqlStart(cmd *cobra.Command) {
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "postgresql")
-	exitIfNotExistDir(dataDir)
+
+	if notExists(dataDir) {
+		log.Println(dataDir + " directory is NOT exist")
+		os.Exit(1)
+	}
 
 	version := getVersionByDataDir(dataDir, optName, "postgresql")
 
 	dbPort := getPortByName(optName, "postgresql")
-	exitIfRunningPort(dbPort)
+
+	if isRunningPort(dbPort) {
+		log.Println(dbPort, "is already in use")
+		os.Exit(1)
+	}
 
 	versionDir := dbdbBaseDir + "/postgresql/versions/" + version
 
@@ -172,13 +186,18 @@ func postgresqlStop(cmd *cobra.Command, checkPort bool) {
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "postgresql")
-	exitIfNotExistDir(dataDir)
+
+	if notExists(dataDir) {
+		log.Println(dataDir + " directory is NOT exist")
+		os.Exit(1)
+	}
 
 	version := getVersionByDataDir(dataDir, optName, "postgresql")
 
 	dbPort := getPortByName(optName, "postgresql")
-	if checkPort {
-		exitIfNotRunningPort(dbPort)
+	if checkPort && isNotRunningPort(dbPort) {
+		log.Println(dbPort, "is NOT available")
+		os.Exit(1)
 	}
 
 	versionDir := dbdbBaseDir + "/postgresql/versions/" + version
@@ -205,10 +224,17 @@ func postgresqlDelete(cmd *cobra.Command) {
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "postgresql")
-	exitIfNotExistDir(dataDir)
+
+	if notExists(dataDir) {
+		log.Println(dataDir + " directory is NOT exist")
+		os.Exit(1)
+	}
 
 	dbPort := getPortByName(optName, "postgresql")
-	exitIfRunningPort(dbPort)
+	if isRunningPort(dbPort) {
+		log.Println(dbPort, "is already in use")
+		os.Exit(1)
+	}
 
 	remove(dataDir)
 	log.Println("data directory deleted. ", dataDir)

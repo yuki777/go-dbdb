@@ -105,39 +105,42 @@ func getOS() string {
 	}
 }
 
-func exitIfExistDir(checkDir string) {
+func exists(checkDir string) bool {
 	if _, err := os.Stat(checkDir); !os.IsNotExist(err) {
-		log.Println(checkDir + " directory is already exist")
-		os.Exit(1)
+		return true
 	}
+
+	return false
 }
 
-func exitIfNotExistDir(checkDir string) {
+func notExists(checkDir string) bool {
 	if _, err := os.Stat(checkDir); os.IsNotExist(err) {
-		log.Println(checkDir + " directory is NOT exist")
-		os.Exit(1)
+		return true
 	}
+
+	return false
 }
 
-func exitIfRunningPort(port string) {
+func isRunningPort(port string) bool {
 	cmd := exec.Command("nc", "-z", "127.0.0.1", port)
 	cmd.Run()
 	exitCode := cmd.ProcessState.ExitCode()
 
 	if exitCode == 0 {
-		log.Println(port + " is already in use")
-		os.Exit(1)
+		return true
 	}
+
+	return false
 }
 
-func exitIfNotRunningPort(port string) {
+func isNotRunningPort(port string) bool {
 	conn, err := net.Dial("tcp", "127.0.0.1:"+port)
 	if err != nil {
-		log.Println(port, "is NOT available")
-		os.Exit(1)
+		return true
 	} else {
 		log.Println(port, "is available")
 		conn.Close()
+		return false
 	}
 }
 
