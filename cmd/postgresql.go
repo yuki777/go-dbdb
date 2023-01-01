@@ -26,11 +26,11 @@ var postgresqlCmd = &cobra.Command{
 
 func init() {
 	postgresqlCmd.AddCommand(postgresqlCreateCmd)
-	// postgresqlCmd.AddCommand(postgresqlStartCmd)
-	// postgresqlCmd.AddCommand(postgresqlStopCmd)
-	// postgresqlCmd.AddCommand(postgresqlRestartCmd)
-	// postgresqlCmd.AddCommand(postgresqlDeleteCmd)
-	// postgresqlCmd.AddCommand(postgresqlCreateStartCmd)
+	postgresqlCmd.AddCommand(postgresqlStartCmd)
+	postgresqlCmd.AddCommand(postgresqlStopCmd)
+	postgresqlCmd.AddCommand(postgresqlRestartCmd)
+	postgresqlCmd.AddCommand(postgresqlDeleteCmd)
+	postgresqlCmd.AddCommand(postgresqlCreateStartCmd)
 }
 
 func postgresqlCreate(cmd *cobra.Command) {
@@ -58,15 +58,15 @@ func postgresqlCreate(cmd *cobra.Command) {
 
 	postgresqlInstallForLinux(versionDir + "/basedir/bin")
 
-	initCmd := exec.Command(
+	createCmd := exec.Command(
 		versionDir+"/basedir/bin/initdb",
 		"--pgdata="+dataDir,
 		"--username=postgres",
 		"--encoding=UTF-8",
 		"--locale=en_US.UTF-8",
 	)
-	log.Println("initCmd: " + initCmd.String())
-	initCmd.Run()
+	log.Println("createCmd:", createCmd.String())
+	createCmd.Run()
 
 	portFile := versionDir + "/datadir/" + optName + "/postgresql.port.init"
 	fileWrite(portFile, optPort)
@@ -127,4 +127,91 @@ func postgresqlInstallForLinux(versionDir string) {
 		log.Println("rmCmd:", rmCmd.String())
 		rmCmd.Run()
 	}
+}
+
+func postgresqlStart(cmd *cobra.Command) {
+	dbdbBaseDir := dbdbBaseDir()
+
+	optName := cmd.Flag("name").Value.String()
+
+	dataDir := getDataDirByName(optName, "postgresql")
+	exitIfNotExistDir(dataDir)
+
+	version := getVersionByDataDir(dataDir, optName, "postgresql")
+
+	dbPort := getPortByName(optName, "postgresql")
+	exitIfRunningPort(dbPort)
+
+	versionDir := dbdbBaseDir + "/postgresql/versions/" + version
+
+	startCmd := exec.Command(
+		versionDir+"/basedir/bin/pg_ctl",
+		"--pgdata", dataDir,
+		"--log", dataDir+"/postgres.log",
+		"-w",
+		"-o '-p "+dbPort+"'",
+		"start",
+	)
+
+	log.Println("startCmd:", startCmd.String())
+	startCmd.Run()
+
+	portFile := dataDir + "/postgresql.port"
+	log.Println("portFile:", portFile)
+	fileWrite(portFile, dbPort)
+
+	confFile := dataDir + "/postgresql.conf"
+	log.Println("Your config file is located:", confFile)
+
+	log.Println(optName, "PostgreSQL database successfully started.")
+}
+
+func postgresqlStop(cmd *cobra.Command, ignoreError bool) {
+	dbdbBaseDir := dbdbBaseDir()
+
+	optName := cmd.Flag("name").Value.String()
+
+	dataDir := getDataDirByName(optName, "postgresql")
+	exitIfNotExistDir(dataDir)
+
+	version := getVersionByDataDir(dataDir, optName, "postgresql")
+
+	dbPort := getPortByName(optName, "postgresql")
+	if !ignoreError {
+		exitIfNotRunningPort(dbPort)
+	}
+
+	versionDir := dbdbBaseDir + "/postgresql/versions/" + version
+
+	stopCmd := exec.Command(
+		versionDir+"/basedir/bin/pg_ctl",
+		"--pgdata", dataDir,
+		"--log", dataDir+"/postgres.log",
+		"-w",
+		"-o '-p "+dbPort+"'",
+		"stop",
+	)
+	log.Println("stopCmd", stopCmd.String())
+	stopCmd.Run()
+
+	copy(dataDir+"/postgresql.port", dataDir+"/postgresql.port.last")
+
+	remove(dataDir + "/postgresql.port")
+
+	log.Println(optName, "PostgreSQL database successfully stopped.")
+}
+
+func postgresqlDelete(cmd *cobra.Command) {
+	optName := cmd.Flag("name").Value.String()
+
+	dataDir := getDataDirByName(optName, "postgresql")
+	exitIfNotExistDir(dataDir)
+
+	dbPort := getPortByName(optName, "postgresql")
+	exitIfRunningPort(dbPort)
+
+	remove(dataDir)
+	log.Println("data directory deleted. ", dataDir)
+
+	log.Println(optName, "PostgreSQL database successfully deleted.")
 }

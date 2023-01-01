@@ -132,7 +132,7 @@ func mongodbStop(cmd *cobra.Command, ignoreError bool) {
 	syscall.Kill(pid, syscall.SIGTERM)
 	remove(dataDir + "mongodb.pid")
 
-	copyFile(dataDir+"/mongodb.port", dataDir+"/mongodb.port.last")
+	copy(dataDir+"/mongodb.port", dataDir+"/mongodb.port.last")
 
 	remove(dataDir + "/mongodb.port")
 

@@ -59,7 +59,7 @@ func mysqlCreate(cmd *cobra.Command) {
 
 	extractFile(versionDir, downloadFilePart)
 
-	mysqldCmd := exec.Command(
+	createCmd := exec.Command(
 		versionDir+"/basedir/bin/mysqld",
 		"--no-defaults",
 		"--initialize-insecure",
@@ -73,8 +73,8 @@ func mysqlCreate(cmd *cobra.Command) {
 		"--pid-file="+versionDir+"/datadir/"+optName+"/mysql.pid",
 	)
 
-	log.Println("mysqldCmd: " + mysqldCmd.String())
-	mysqldCmd.Run()
+	log.Println("createCmd:", createCmd.String())
+	createCmd.Run()
 
 	portFile := versionDir + "/datadir/" + optName + "/mysql.port.init"
 	fileWrite(portFile, optPort)
@@ -106,7 +106,7 @@ func mysqlStart(cmd *cobra.Command) {
 	dbUser := "_dbdb_mysql"
 	dbSocket := "/tmp/dbdb_mysql_" + dbPort + ".sock"
 
-	mysqldCmd := exec.Command(
+	startCmd := exec.Command(
 		versionDir+"/basedir/bin/mysqld",
 		"--defaults-file="+dataDir+"/my.cnf",
 		"--daemonize",
@@ -120,8 +120,8 @@ func mysqlStart(cmd *cobra.Command) {
 		"--pid-file="+versionDir+"/datadir/"+optName+"/mysql.pid",
 	)
 
-	log.Println("mysqldCmd: " + mysqldCmd.String())
-	mysqldCmd.Run()
+	log.Println("startCmd:", startCmd.String())
+	startCmd.Run()
 
 	portFile := dataDir + "/mysql.port"
 	log.Println("portFile:", portFile)
@@ -152,7 +152,7 @@ func mysqlStop(cmd *cobra.Command, ignoreError bool) {
 
 	versionDir := dbdbBaseDir + "/mysql/versions/" + version
 
-	mysqlAdminCmd := exec.Command(
+	stopCmd := exec.Command(
 		versionDir+"/basedir/bin/mysqladmin",
 		"--user=root",
 		"--host=localhost",
@@ -160,10 +160,10 @@ func mysqlStop(cmd *cobra.Command, ignoreError bool) {
 		"--socket="+dbSocket,
 		"shutdown",
 	)
-	log.Println("mysqldCmd: " + mysqlAdminCmd.String())
-	mysqlAdminCmd.Run()
+	log.Println("stopCmd", stopCmd.String())
+	stopCmd.Run()
 
-	copyFile(dataDir+"/mysql.port", dataDir+"/mysql.port.last")
+	copy(dataDir+"/mysql.port", dataDir+"/mysql.port.last")
 
 	remove(dataDir + "/mysql.port")
 

@@ -305,7 +305,7 @@ func fileWrite(path string, content string) {
 	}
 }
 
-func copyFile(source string, dest string) {
+func copy(source string, dest string) {
 	_, err := os.Stat(source)
 	if err != nil {
 		if os.IsNotExist(err) {
