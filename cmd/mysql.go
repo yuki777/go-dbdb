@@ -163,9 +163,7 @@ func mysqlStop(cmd *cobra.Command, ignoreError bool) {
 	log.Println("mysqldCmd: " + mysqlAdminCmd.String())
 	mysqlAdminCmd.Run()
 
-	source := dataDir + "/mysql.port"
-	dest := dataDir + "/mysql.port.last"
-	copyFile(source, dest)
+	copyFile(dataDir+"/mysql.port", dataDir+"/mysql.port.last")
 
 	remove(dataDir + "/mysql.port")
 
