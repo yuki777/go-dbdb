@@ -131,7 +131,7 @@ func exitIfRunningPort(port string) {
 }
 
 func exitIfNotRunningPort(port string) {
-	conn, err := net.Dial("tcp", "localhost:"+port)
+	conn, err := net.Dial("tcp", "127.0.0.1:"+port)
 	if err != nil {
 		log.Println(port, "is NOT available")
 		os.Exit(1)
