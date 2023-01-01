@@ -52,6 +52,7 @@ jobs:
         run: |
           go run main.go postgresql create       --name=pg124 --version=12.4 --port=54321
           go run main.go postgresql start        --name=pg124
+          sleep 10
           go run main.go postgresql stop         --name=pg124
           go run main.go postgresql restart      --name=pg124
           go run main.go postgresql delete       --name=pg124
