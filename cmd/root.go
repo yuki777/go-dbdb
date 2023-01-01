@@ -304,6 +304,14 @@ func fileWrite(path string, content string) {
 }
 
 func copyFile(source string, dest string) {
+	_, err := os.Stat(source)
+	if err != nil {
+		if os.IsNotExist(err) {
+			log.Println(source, "The source file to be copied does not exist, but the process continues.")
+			return
+		}
+	}
+
 	inputFile, err := os.Open(source)
 	if err != nil {
 		log.Println("unknown error on inputFile:", inputFile)
