@@ -74,7 +74,7 @@ func postgresqlCreate(cmd *cobra.Command) {
 	log.Println("createCmd:", createCmd.String())
 	createCmd.Run()
 
-	portFile := versionDir + "/datadir/" + optName + "/postgresql.port.init"
+	portFile := dataDir + "/postgresql.port.init"
 	fileWrite(portFile, optPort)
 	log.Println("postgresql.port.init:", portFile)
 

@@ -74,19 +74,19 @@ func mysqlCreate(cmd *cobra.Command) {
 		"--socket="+dbSocket,
 		"--basedir="+versionDir+"/basedir",
 		"--plugin-dir="+versionDir+"/basedir/lib/plugin",
-		"--datadir="+versionDir+"/datadir/"+optName,
-		"--log-error="+versionDir+"/datadir/"+optName+"/mysqld.err",
-		"--pid-file="+versionDir+"/datadir/"+optName+"/mysql.pid",
+		"--datadir="+dataDir,
+		"--log-error="+dataDir+"/mysqld.err",
+		"--pid-file="+dataDir+"/mysql.pid",
 	)
 
 	log.Println("createCmd:", createCmd.String())
 	createCmd.Run()
 
-	portFile := versionDir + "/datadir/" + optName + "/mysql.port.init"
+	portFile := dataDir + "/mysql.port.init"
 	fileWrite(portFile, optPort)
 	log.Println("mysql.port.init:", portFile)
 
-	confFile := versionDir + "/datadir/" + optName + "/my.cnf"
+	confFile := dataDir + "/my.cnf"
 	fileWrite(confFile, "[mysqld]\nbind-address = 127.0.0.1\n")
 	log.Println("my.cnf:", confFile)
 
@@ -129,9 +129,9 @@ func mysqlStart(cmd *cobra.Command) {
 		"--socket="+dbSocket,
 		"--basedir="+versionDir+"/basedir",
 		"--plugin-dir="+versionDir+"/basedir/lib/plugin",
-		"--datadir="+versionDir+"/datadir/"+optName,
-		"--log-error="+versionDir+"/datadir/"+optName+"/mysqld.err",
-		"--pid-file="+versionDir+"/datadir/"+optName+"/mysql.pid",
+		"--datadir="+dataDir,
+		"--log-error="+dataDir+"/mysqld.err",
+		"--pid-file="+dataDir+"/mysql.pid",
 	)
 
 	log.Println("startCmd:", startCmd.String())

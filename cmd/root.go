@@ -57,7 +57,7 @@ func init() {
 
 	rootCmd.AddCommand(mysqlCmd)
 	rootCmd.AddCommand(postgresqlCmd)
-	// rootCmd.AddCommand(redisCmd)
+	rootCmd.AddCommand(redisCmd)
 	rootCmd.AddCommand(mongodbCmd)
 }
 
@@ -67,7 +67,8 @@ func dbdbBaseDir() string {
 	if xdgDataHome == "" {
 		currentUser, err := user.Current()
 		if err != nil {
-			os.Exit(1)
+			log.Println("unknown error on user.Current()")
+			panic(err)
 		}
 
 		homeDir := currentUser.HomeDir
