@@ -57,7 +57,7 @@ func init() {
 
 	rootCmd.AddCommand(mysqlCmd)
 	rootCmd.AddCommand(postgresqlCmd)
-	// rootCmd.AddCommand(redisCmd)
+	rootCmd.AddCommand(redisCmd)
 	rootCmd.AddCommand(mongodbCmd)
 }
 
