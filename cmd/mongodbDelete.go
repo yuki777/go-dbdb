@@ -15,7 +15,7 @@ var mongodbDeleteCmd = &cobra.Command{
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
 		mongodbStop(cmd, true)
-		time.Sleep(2 * time.Second) // Waiting for the port to close
+		time.Sleep(5 * time.Second) // Waiting for the port to close
 		mongodbDelete(cmd)
 	},
 }
