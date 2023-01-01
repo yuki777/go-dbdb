@@ -59,6 +59,7 @@ func postgresqlCreate(cmd *cobra.Command) {
 	postgresqlInstallForLinux(versionDir + "/basedir/bin")
 
 	initCmd := exec.Command(
+		versionDir+"/basedir/bin/initdb",
 		"--pgdata="+dataDir,
 		"--username=postgres",
 		"--encoding=UTF-8",
