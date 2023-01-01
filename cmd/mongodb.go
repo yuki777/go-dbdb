@@ -107,7 +107,7 @@ func mongodbStart(cmd *cobra.Command) {
 	log.Println(optName, "MongoDB database successfully started.")
 }
 
-func mongodbStop(cmd *cobra.Command, ignoreError bool) {
+func mongodbStop(cmd *cobra.Command, checkPort bool) {
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -118,7 +118,7 @@ func mongodbStop(cmd *cobra.Command, ignoreError bool) {
 	version := getVersionByDataDir(dataDir, optName, "mongodb")
 
 	dbPort := getPortByName(optName, "mongodb")
-	if !ignoreError {
+	if checkPort {
 		exitIfNotRunningPort(dbPort)
 	}
 
@@ -132,7 +132,7 @@ func mongodbStop(cmd *cobra.Command, ignoreError bool) {
 	syscall.Kill(pid, syscall.SIGTERM)
 	remove(dataDir + "mongodb.pid")
 
-	copyFile(dataDir+"/mongodb.port", dataDir+"/mongodb.port.last")
+	copy(dataDir+"/mongodb.port", dataDir+"/mongodb.port.last")
 
 	remove(dataDir + "/mongodb.port")
 

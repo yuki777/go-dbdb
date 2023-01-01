@@ -12,7 +12,7 @@ var mongodbStopCmd = &cobra.Command{
 	Short: "Stop mongodb server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		mongodbStop(cmd, false)
+		mongodbStop(cmd, true)
 	},
 }
 

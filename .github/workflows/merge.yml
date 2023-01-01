@@ -21,50 +21,38 @@ jobs:
       - name: Build and run on macos
         if: matrix.os == 'macos-12'
         run: |
-          echo build macos
           GOOS=darwin GOARCH=amd64 go build -o bin/go-dbdb-macos-amd64
-          echo mysql create
-          ./bin/go-dbdb-macos-amd64 mysql create  --name=mysql57 --version 5.7.31 --port 53306
-          echo mysql start
+          ./bin/go-dbdb-macos-amd64 mysql create  --name=mysql57 --version=5.7.31 --port=53306
           ./bin/go-dbdb-macos-amd64 mysql start   --name=mysql57
-          echo mysql stop
           ./bin/go-dbdb-macos-amd64 mysql stop    --name=mysql57
-          echo mysql restart
           ./bin/go-dbdb-macos-amd64 mysql restart --name=mysql57
-          echo mysql delete
           ./bin/go-dbdb-macos-amd64 mysql delete  --name=mysql57
-          echo mongodb create
-          ./bin/go-dbdb-macos-amd64 mongodb create  --name=mongodb4 --version=4.4.10 --port 27017
-          echo mongodb start
+          ./bin/go-dbdb-macos-amd64 mongodb create  --name=mongodb4 --version=4.4.10 --port=27017
           ./bin/go-dbdb-macos-amd64 mongodb start   --name=mongodb4
-          echo mongodb stop
           ./bin/go-dbdb-macos-amd64 mongodb stop    --name=mongodb4
-          echo mongodb restart
           ./bin/go-dbdb-macos-amd64 mongodb restart --name=mongodb4
-          echo mongodb delete
           ./bin/go-dbdb-macos-amd64 mongodb delete  --name=mongodb4
+          ./bin/go-dbdb-macos-amd64 postgresql create  --name=pg124 --version=12.4 --port=54321
+          ./bin/go-dbdb-macos-amd64 postgresql start   --name=pg124
+          ./bin/go-dbdb-macos-amd64 postgresql stop    --name=pg124
+          ./bin/go-dbdb-macos-amd64 postgresql restart --name=pg124
+          ./bin/go-dbdb-macos-amd64 postgresql delete  --name=pg124
       - name: Build and run on ubuntu
         if: matrix.os == 'ubuntu-22.04'
         run: |
-          echo build linux
           GOOS=linux GOARCH=amd64 go build -o bin/go-dbdb-linux-amd64
-          echo mysql create
-          ./bin/go-dbdb-linux-amd64 mysql create  --name=mysql57 --version 5.7.31 --port 53306
-          echo mysql start
+          ./bin/go-dbdb-linux-amd64 mysql create  --name=mysql57 --version=5.7.31 --port=53306
           ./bin/go-dbdb-linux-amd64 mysql start   --name=mysql57
-          echo mysql stop
           ./bin/go-dbdb-linux-amd64 mysql stop    --name=mysql57
-          echo mysql restart
           ./bin/go-dbdb-linux-amd64 mysql restart --name=mysql57
-          echo mysql delete
           ./bin/go-dbdb-linux-amd64 mysql delete  --name=mysql57
-          echo mongodb create
-          ./bin/go-dbdb-linux-amd64 mongodb create  --name=mongodb4 --version=4.4.10 --port 27017
-          echo mongodb start
+          ./bin/go-dbdb-linux-amd64 mongodb create  --name=mongodb4 --version=4.4.10 --port=27017
           ./bin/go-dbdb-linux-amd64 mongodb start   --name=mongodb4
-          echo mongodb stop
           ./bin/go-dbdb-linux-amd64 mongodb stop    --name=mongodb4
-          echo mongodb restart
           ./bin/go-dbdb-linux-amd64 mongodb restart --name=mongodb4
-          echo mongodb delete
           ./bin/go-dbdb-linux-amd64 mongodb delete  --name=mongodb4
+          ./bin/go-dbdb-linux-amd64 postgresql create  --name=pg124 --version=12.4 --port=54321
+          ./bin/go-dbdb-linux-amd64 postgresql start   --name=pg124
+          ./bin/go-dbdb-linux-amd64 postgresql stop    --name=pg124
+          ./bin/go-dbdb-linux-amd64 postgresql restart --name=pg124
+          ./bin/go-dbdb-linux-amd64 postgresql delete  --name=pg124

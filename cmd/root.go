@@ -22,7 +22,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "go-dbdb",
+	Use:   os.Args[0],
 	Short: "A brief description of your application",
 	Long: `A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
@@ -56,7 +56,7 @@ func init() {
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	rootCmd.AddCommand(mysqlCmd)
-	// rootCmd.AddCommand(postgresqlCmd)
+	rootCmd.AddCommand(postgresqlCmd)
 	// rootCmd.AddCommand(redisCmd)
 	rootCmd.AddCommand(mongodbCmd)
 }
@@ -131,7 +131,7 @@ func exitIfRunningPort(port string) {
 }
 
 func exitIfNotRunningPort(port string) {
-	conn, err := net.Dial("tcp", "localhost:"+port)
+	conn, err := net.Dial("tcp", "127.0.0.1:"+port)
 	if err != nil {
 		log.Println(port, "is NOT available")
 		os.Exit(1)
@@ -150,6 +150,7 @@ func getUrlFileAs(url string, saveAs string) {
 		return
 	}
 
+	log.Println("downloading ...")
 	response, err := http.Get(url)
 	if err != nil {
 		panic(err)
@@ -168,6 +169,7 @@ func getUrlFileAs(url string, saveAs string) {
 	if err != nil {
 		panic(err)
 	}
+	log.Println("downloading ... done.")
 }
 
 func extractFile(dir string, filepart string) {
@@ -303,7 +305,7 @@ func fileWrite(path string, content string) {
 	}
 }
 
-func copyFile(source string, dest string) {
+func copy(source string, dest string) {
 	_, err := os.Stat(source)
 	if err != nil {
 		if os.IsNotExist(err) {
