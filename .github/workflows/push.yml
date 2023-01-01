@@ -14,8 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup debug session
-        uses: mxschmitt/action-tmate@v3
+      # - name: Setup debug session
+      #   uses: mxschmitt/action-tmate@v3
 
       - name: Print uname and go version
         run: |
