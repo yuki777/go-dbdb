@@ -12,7 +12,7 @@ var mysqlStopCmd = &cobra.Command{
 	Short: "Stop mysql server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		mysqlStop(cmd, false)
+		mysqlStop(cmd, true)
 	},
 }
 

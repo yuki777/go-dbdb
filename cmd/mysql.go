@@ -133,7 +133,7 @@ func mysqlStart(cmd *cobra.Command) {
 	log.Println(optName, "MySQL database successfully started.")
 }
 
-func mysqlStop(cmd *cobra.Command, ignoreError bool) {
+func mysqlStop(cmd *cobra.Command, checkPort bool) {
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -144,8 +144,11 @@ func mysqlStop(cmd *cobra.Command, ignoreError bool) {
 	version := getVersionByDataDir(dataDir, optName, "mysql")
 
 	dbPort := getPortByName(optName, "mysql")
-	if !ignoreError {
+	if checkPort {
+		log.Println("exitIfNotRunningPort()", dbPort)
 		exitIfNotRunningPort(dbPort)
+	} else {
+		log.Println("exitIfNotRunningPort() will not be executed.")
 	}
 
 	dbSocket := "/tmp/dbdb_mysql_" + dbPort + ".sock"

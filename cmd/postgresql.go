@@ -166,7 +166,7 @@ func postgresqlStart(cmd *cobra.Command) {
 	log.Println(optName, "PostgreSQL database successfully started.")
 }
 
-func postgresqlStop(cmd *cobra.Command, ignoreError bool) {
+func postgresqlStop(cmd *cobra.Command, checkPort bool) {
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -177,8 +177,11 @@ func postgresqlStop(cmd *cobra.Command, ignoreError bool) {
 	version := getVersionByDataDir(dataDir, optName, "postgresql")
 
 	dbPort := getPortByName(optName, "postgresql")
-	if !ignoreError {
+	if checkPort {
+		log.Println("exitIfNotRunningPort()", dbPort)
 		exitIfNotRunningPort(dbPort)
+	} else {
+		log.Println("exitIfNotRunningPort() will not be executed.")
 	}
 
 	versionDir := dbdbBaseDir + "/postgresql/versions/" + version

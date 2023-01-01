@@ -12,7 +12,7 @@ var postgresqlStopCmd = &cobra.Command{
 	Short: "Stop postgresql server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		postgresqlStop(cmd, false)
+		postgresqlStop(cmd, true)
 	},
 }
 

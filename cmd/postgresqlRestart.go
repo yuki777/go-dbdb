@@ -12,7 +12,7 @@ var postgresqlRestartCmd = &cobra.Command{
 	Short: "Restart postgresql server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		postgresqlStop(cmd, true)
+		postgresqlStop(cmd, false)
 		postgresqlStart(cmd)
 	},
 }
