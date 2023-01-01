@@ -47,3 +47,7 @@ jobs:
           go run main.go mongodb delete       --name=mongodb4
           go run main.go mongodb create-start --name=mongodb4 --version=4.4.10 --port 27017
           go run main.go mongodb delete       --name=mongodb4
+
+      - name: Run postgresql commands
+        run: |
+          go run main.go postgresql create --name=pg124 --version=12.4 --port 54321
