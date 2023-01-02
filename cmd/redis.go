@@ -182,23 +182,5 @@ func redisStop(cmd *cobra.Command, checkPort bool) {
 
 func redisDelete(cmd *cobra.Command) {
 	log.Println(getCurrentFuncName(), "called")
-	optName := cmd.Flag("name").Value.String()
-
-	dataDir := getDataDirByName(optName, "redis")
-
-	if notExists(dataDir) {
-		log.Println(dataDir + " directory is NOT exist")
-		os.Exit(1)
-	}
-
-	dbPort := getPortByName(optName, "redis")
-	if isRunningPort(dbPort) {
-		log.Println(dbPort, "is already in use")
-		os.Exit(1)
-	}
-
-	remove(dataDir)
-	log.Println("data directory deleted. ", dataDir)
-
-	log.Println(optName, "Redis database successfully deleted.")
+	dbdbDelete(cmd, "redis")
 }

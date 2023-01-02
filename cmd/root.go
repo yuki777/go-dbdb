@@ -351,3 +351,25 @@ func getCurrentFuncName() string {
 	pc, _, _, _ := runtime.Caller(1)
 	return fmt.Sprintf("%s", runtime.FuncForPC(pc).Name())
 }
+
+func dbdbDelete(cmd *cobra.Command, dbType string) {
+	optName := cmd.Flag("name").Value.String()
+
+	dataDir := getDataDirByName(optName, dbType)
+
+	if notExists(dataDir) {
+		log.Println(dataDir + "The directory to be deleted does not exist.")
+		os.Exit(1)
+	}
+
+	dbPort := getPortByName(optName, dbType)
+	if isRunningPort(dbPort) {
+		log.Println(dbPort, "This port is still in use. It must be stopped by `stop` command.")
+		os.Exit(1)
+	}
+
+	remove(dataDir)
+	log.Println("data directory deleted. ", dataDir)
+
+	log.Println(optName, dbType, "database successfully deleted.")
+}
