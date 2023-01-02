@@ -10,5 +10,4 @@ jobs:
   call-test-on-push:
     uses: ./.github/workflows/called.push.yml
   call-test-on-merge:
-    needs: call-test-on-push
     uses: ./.github/workflows/called.merge.yml
