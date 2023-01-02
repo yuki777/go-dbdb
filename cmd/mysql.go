@@ -149,12 +149,6 @@ func mysqlStart(cmd *cobra.Command) {
 	log.Println(optName, "MySQL database successfully started.")
 }
 
-func mysqlCreateStart(cmd *cobra.Command) {
-	log.Println(getCurrentFuncName(), "called")
-	mysqlCreate(cmd)
-	mysqlStart(cmd)
-}
-
 func mysqlStop(cmd *cobra.Command, checkPort bool) {
 	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
@@ -196,6 +190,12 @@ func mysqlStop(cmd *cobra.Command, checkPort bool) {
 	remove(dataDir + "/mysql.port")
 
 	log.Println(optName, "MySQL database successfully stopped.")
+}
+
+func mysqlCreateStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	mysqlCreate(cmd)
+	mysqlStart(cmd)
 }
 
 func mysqlRestart(cmd *cobra.Command) {

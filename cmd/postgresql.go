@@ -183,18 +183,6 @@ func postgresqlStart(cmd *cobra.Command) {
 	log.Println(optName, "PostgreSQL database successfully started.")
 }
 
-func postgresqlCreateStart(cmd *cobra.Command) {
-	log.Println(getCurrentFuncName(), "called")
-	postgresqlCreate(cmd)
-	postgresqlStart(cmd)
-}
-
-func postgresqlRestart(cmd *cobra.Command) {
-	log.Println(getCurrentFuncName(), "called")
-	postgresqlStop(cmd, false)
-	postgresqlStart(cmd)
-}
-
 func postgresqlStop(cmd *cobra.Command, checkPort bool) {
 	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
@@ -234,6 +222,18 @@ func postgresqlStop(cmd *cobra.Command, checkPort bool) {
 	remove(dataDir + "/postgresql.port")
 
 	log.Println(optName, "PostgreSQL database successfully stopped.")
+}
+
+func postgresqlCreateStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	postgresqlCreate(cmd)
+	postgresqlStart(cmd)
+}
+
+func postgresqlRestart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	postgresqlStop(cmd, false)
+	postgresqlStart(cmd)
 }
 
 func postgresqlDelete(cmd *cobra.Command) {

@@ -35,12 +35,6 @@ func init() {
 	mongodbCmd.AddCommand(mongodbCreateStartCmd)
 }
 
-func mongodbCreateStart(cmd *cobra.Command) {
-	log.Println(getCurrentFuncName(), "called")
-	mongodbCreate(cmd)
-	mongodbStart(cmd)
-}
-
 func mongodbCreate(cmd *cobra.Command) {
 	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
@@ -159,6 +153,12 @@ func mongodbStop(cmd *cobra.Command, checkPort bool) {
 	time.Sleep(1 * time.Second) // wait to close the port
 
 	log.Println(optName, "MongoDB database successfully stopped.")
+}
+
+func mongodbCreateStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	mongodbCreate(cmd)
+	mongodbStart(cmd)
 }
 
 func mongodbRestart(cmd *cobra.Command) {
