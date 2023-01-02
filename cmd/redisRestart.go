@@ -12,8 +12,7 @@ var redisRestartCmd = &cobra.Command{
 	Short: "Restart redis server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		redisStop(cmd, false)
-		redisStart(cmd)
+		redisRestart(cmd)
 	},
 }
 

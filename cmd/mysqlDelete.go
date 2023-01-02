@@ -12,7 +12,6 @@ var mysqlDeleteCmd = &cobra.Command{
 	Short: "Delete mysql server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		mysqlStop(cmd, false)
 		mysqlDelete(cmd)
 	},
 }

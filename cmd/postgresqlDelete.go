@@ -12,7 +12,6 @@ var postgresqlDeleteCmd = &cobra.Command{
 	Short: "Delete postgresql server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		postgresqlStop(cmd, false)
 		postgresqlDelete(cmd)
 	},
 }

@@ -4,8 +4,6 @@ Copyright © 2022 Yuki Adachi <yuki777@gmail.com>
 package cmd
 
 import (
-	"time"
-
 	"github.com/spf13/cobra"
 )
 
@@ -14,9 +12,7 @@ var mongodbRestartCmd = &cobra.Command{
 	Short: "Restart mongodb server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		mongodbStop(cmd, false)
-		time.Sleep(1 * time.Second) // Waiting for the port to close
-		mongodbStart(cmd)
+		mongodbRestart(cmd)
 	},
 }
 

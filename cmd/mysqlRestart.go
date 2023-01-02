@@ -12,8 +12,7 @@ var mysqlRestartCmd = &cobra.Command{
 	Short: "Restart mysql server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		mysqlStop(cmd, false)
-		mysqlStart(cmd)
+		mysqlRestart(cmd)
 	},
 }
 

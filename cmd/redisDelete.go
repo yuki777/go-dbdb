@@ -12,7 +12,6 @@ var redisDeleteCmd = &cobra.Command{
 	Short: "Delete redis server",
 	Long:  `...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		redisStop(cmd, false)
 		redisDelete(cmd)
 	},
 }
