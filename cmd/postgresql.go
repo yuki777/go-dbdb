@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2023 Yuki Adachi <yuki777@gmail.com>
 */
 package cmd
 
@@ -183,18 +183,6 @@ func postgresqlStart(cmd *cobra.Command) {
 	log.Println(optName, "PostgreSQL database successfully started.")
 }
 
-func postgresqlCreateStart(cmd *cobra.Command) {
-	log.Println(getCurrentFuncName(), "called")
-	postgresqlCreate(cmd)
-	postgresqlStart(cmd)
-}
-
-func postgresqlRestart(cmd *cobra.Command) {
-	log.Println(getCurrentFuncName(), "called")
-	postgresqlStop(cmd, false)
-	postgresqlStart(cmd)
-}
-
 func postgresqlStop(cmd *cobra.Command, checkPort bool) {
 	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
@@ -236,25 +224,19 @@ func postgresqlStop(cmd *cobra.Command, checkPort bool) {
 	log.Println(optName, "PostgreSQL database successfully stopped.")
 }
 
+func postgresqlCreateStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	postgresqlCreate(cmd)
+	postgresqlStart(cmd)
+}
+
+func postgresqlRestart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	postgresqlStop(cmd, false)
+	postgresqlStart(cmd)
+}
+
 func postgresqlDelete(cmd *cobra.Command) {
 	log.Println(getCurrentFuncName(), "called")
-	optName := cmd.Flag("name").Value.String()
-
-	dataDir := getDataDirByName(optName, "postgresql")
-
-	if notExists(dataDir) {
-		log.Println(dataDir + " directory is NOT exist")
-		os.Exit(1)
-	}
-
-	dbPort := getPortByName(optName, "postgresql")
-	if isRunningPort(dbPort) {
-		log.Println(dbPort, "is already in use")
-		os.Exit(1)
-	}
-
-	remove(dataDir)
-	log.Println("data directory deleted. ", dataDir)
-
-	log.Println(optName, "PostgreSQL database successfully deleted.")
+	dbdbDelete(cmd, "postgresql")
 }

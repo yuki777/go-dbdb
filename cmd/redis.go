@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2023 Yuki Adachi <yuki777@gmail.com>
 */
 package cmd
 
@@ -131,17 +131,6 @@ func redisStart(cmd *cobra.Command) {
 	log.Println(optName, "Redis database successfully started.")
 }
 
-func redisCreateStart(cmd *cobra.Command) {
-	log.Println(getCurrentFuncName(), "called")
-	redisCreate(cmd)
-	redisStart(cmd)
-}
-
-func redisRestart(cmd *cobra.Command) {
-	redisStop(cmd, false)
-	redisStart(cmd)
-}
-
 func redisStop(cmd *cobra.Command, checkPort bool) {
 	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
@@ -180,25 +169,18 @@ func redisStop(cmd *cobra.Command, checkPort bool) {
 	log.Println(optName, "Redis database successfully stopped.")
 }
 
+func redisCreateStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	redisCreate(cmd)
+	redisStart(cmd)
+}
+
+func redisRestart(cmd *cobra.Command) {
+	redisStop(cmd, false)
+	redisStart(cmd)
+}
+
 func redisDelete(cmd *cobra.Command) {
 	log.Println(getCurrentFuncName(), "called")
-	optName := cmd.Flag("name").Value.String()
-
-	dataDir := getDataDirByName(optName, "redis")
-
-	if notExists(dataDir) {
-		log.Println(dataDir + " directory is NOT exist")
-		os.Exit(1)
-	}
-
-	dbPort := getPortByName(optName, "redis")
-	if isRunningPort(dbPort) {
-		log.Println(dbPort, "is already in use")
-		os.Exit(1)
-	}
-
-	remove(dataDir)
-	log.Println("data directory deleted. ", dataDir)
-
-	log.Println(optName, "Redis database successfully deleted.")
+	dbdbDelete(cmd, "redis")
 }

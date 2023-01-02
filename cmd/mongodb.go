@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2023 Yuki Adachi <yuki777@gmail.com>
 */
 package cmd
 
@@ -33,12 +33,6 @@ func init() {
 	mongodbCmd.AddCommand(mongodbRestartCmd)
 	mongodbCmd.AddCommand(mongodbDeleteCmd)
 	mongodbCmd.AddCommand(mongodbCreateStartCmd)
-}
-
-func mongodbCreateStart(cmd *cobra.Command) {
-	log.Println(getCurrentFuncName(), "called")
-	mongodbCreate(cmd)
-	mongodbStart(cmd)
 }
 
 func mongodbCreate(cmd *cobra.Command) {
@@ -161,6 +155,12 @@ func mongodbStop(cmd *cobra.Command, checkPort bool) {
 	log.Println(optName, "MongoDB database successfully stopped.")
 }
 
+func mongodbCreateStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	mongodbCreate(cmd)
+	mongodbStart(cmd)
+}
+
 func mongodbRestart(cmd *cobra.Command) {
 	log.Println(getCurrentFuncName(), "called")
 	mongodbStop(cmd, false)
@@ -169,24 +169,5 @@ func mongodbRestart(cmd *cobra.Command) {
 
 func mongodbDelete(cmd *cobra.Command) {
 	log.Println(getCurrentFuncName(), "called")
-	optName := cmd.Flag("name").Value.String()
-
-	dataDir := getDataDirByName(optName, "mongodb")
-
-	if notExists(dataDir) {
-		log.Println(dataDir + "The directory to be deleted does not exist.")
-		os.Exit(1)
-	}
-
-	dbPort := getPortByName(optName, "mongodb")
-
-	if isRunningPort(dbPort) {
-		log.Println(dbPort, "This port is still in use. It must be stopped by `stop` command.")
-		os.Exit(1)
-	}
-
-	remove(dataDir)
-	log.Println("data directory deleted. ", dataDir)
-
-	log.Println(optName, "MongoDB database successfully deleted.")
+	dbdbDelete(cmd, "mongodb")
 }

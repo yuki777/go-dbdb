@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+Copyright © 2023 Yuki Adachi <yuki777@gmail.com>
 */
 package cmd
 
@@ -149,12 +149,6 @@ func mysqlStart(cmd *cobra.Command) {
 	log.Println(optName, "MySQL database successfully started.")
 }
 
-func mysqlCreateStart(cmd *cobra.Command) {
-	log.Println(getCurrentFuncName(), "called")
-	mysqlCreate(cmd)
-	mysqlStart(cmd)
-}
-
 func mysqlStop(cmd *cobra.Command, checkPort bool) {
 	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
@@ -198,6 +192,12 @@ func mysqlStop(cmd *cobra.Command, checkPort bool) {
 	log.Println(optName, "MySQL database successfully stopped.")
 }
 
+func mysqlCreateStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	mysqlCreate(cmd)
+	mysqlStart(cmd)
+}
+
 func mysqlRestart(cmd *cobra.Command) {
 	log.Println(getCurrentFuncName(), "called")
 	mysqlStop(cmd, false)
@@ -206,23 +206,5 @@ func mysqlRestart(cmd *cobra.Command) {
 
 func mysqlDelete(cmd *cobra.Command) {
 	log.Println(getCurrentFuncName(), "called")
-	optName := cmd.Flag("name").Value.String()
-
-	dataDir := getDataDirByName(optName, "mysql")
-
-	if notExists(dataDir) {
-		log.Println(dataDir + " directory is NOT exist")
-		os.Exit(1)
-	}
-
-	dbPort := getPortByName(optName, "mysql")
-	if isRunningPort(dbPort) {
-		log.Println(dbPort, "is already in use")
-		os.Exit(1)
-	}
-
-	remove(dataDir)
-	log.Println("data directory deleted. ", dataDir)
-
-	log.Println(optName, "MySQL database successfully deleted.")
+	dbdbDelete(cmd, "mysql")
 }
