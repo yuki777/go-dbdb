@@ -1,0 +1,30 @@
+on:
+  workflow_call:
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Print release version
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}
+      - name: Print uname and go version
+        run: |
+          uname -a
+          go version
+      - name: Build
+        run: |
+          GOOS=darwin GOARCH=amd64 go build -o bin/go-dbdb-macos-amd64.$RELEASE_VERSION
+          GOOS=darwin GOARCH=arm64 go build -o bin/go-dbdb-macos-arm64.$RELEASE_VERSION
+          GOOS=linux GOARCH=amd64  go build -o bin/go-dbdb-linux-amd64.$RELEASE_VERSION
+          GOOS=linux GOARCH=arm64  go build -o bin/go-dbdb-linux-arm64.$RELEASE_VERSION
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            bin/go-dbdb-*

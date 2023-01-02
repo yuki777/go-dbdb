@@ -1,0 +1,14 @@
+name: Publish
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  call-test-on-push:
+    uses: ./.github/workflows/called.push.yml
+  call-test-on-merge:
+    uses: ./.github/workflows/called.merge.yml
+  call-release:
+    uses: ./.github/workflows/called.publish.yml
