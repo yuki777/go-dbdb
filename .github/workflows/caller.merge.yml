@@ -1,0 +1,13 @@
+name: Merge
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  call-test-on-push:
+    uses: ./.github/workflows/called.push.yml
+  call-test-on-merge:
+    uses: ./.github/workflows/called.merge.yml
