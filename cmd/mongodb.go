@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"syscall"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -34,7 +35,14 @@ func init() {
 	mongodbCmd.AddCommand(mongodbCreateStartCmd)
 }
 
+func mongodbCreateStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	mongodbCreate(cmd)
+	mongodbStart(cmd)
+}
+
 func mongodbCreate(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -77,6 +85,7 @@ func mongodbCreate(cmd *cobra.Command) {
 }
 
 func mongodbStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -123,6 +132,7 @@ func mongodbStart(cmd *cobra.Command) {
 }
 
 func mongodbStop(cmd *cobra.Command, checkPort bool) {
+	log.Println(getCurrentFuncName(), "called")
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "mongodb")
@@ -149,20 +159,28 @@ func mongodbStop(cmd *cobra.Command, checkPort bool) {
 	log.Println(optName, "MongoDB database successfully stopped.")
 }
 
+func mongodbRestart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	mongodbStop(cmd, false)
+	time.Sleep(1 * time.Second) // Waiting for the port to close
+	mongodbStart(cmd)
+}
+
 func mongodbDelete(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "mongodb")
 
 	if notExists(dataDir) {
-		log.Println(dataDir + " directory is NOT exist")
+		log.Println(dataDir + "The directory to be deleted does not exist.")
 		os.Exit(1)
 	}
 
 	dbPort := getPortByName(optName, "mongodb")
 
 	if isRunningPort(dbPort) {
-		log.Println(dbPort, "is already in use")
+		log.Println(dbPort, "This port is still in use. It must be stopped by `stop` command.")
 		os.Exit(1)
 	}
 

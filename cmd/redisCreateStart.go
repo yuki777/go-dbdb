@@ -17,14 +17,13 @@ var redisCreateStartCmd = &cobra.Command{
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		optName := cmd.Flag("name").Value.String()
 		if !validateOptName(optName) {
-			log.Println("Error: Invalid arguments. use string, number and -_. for --name=" + optName)
+			log.Println("Error: Invalid arguments. use these characters strings [0-9a-zA-Z-_.] for `name`" + optName)
 			cmd.Usage()
 			os.Exit(1)
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		redisCreate(cmd)
-		redisStart(cmd)
+		redisCreateStart(cmd)
 	},
 }
 

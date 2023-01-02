@@ -34,6 +34,7 @@ func init() {
 }
 
 func postgresqlCreate(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -86,6 +87,7 @@ func postgresqlCreate(cmd *cobra.Command) {
 }
 
 func postgresqlInstallForLinux(versionDir string) {
+	log.Println(getCurrentFuncName(), "called")
 	if getOS() != "linux" {
 		return
 	}
@@ -136,6 +138,7 @@ func postgresqlInstallForLinux(versionDir string) {
 }
 
 func postgresqlStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -180,7 +183,20 @@ func postgresqlStart(cmd *cobra.Command) {
 	log.Println(optName, "PostgreSQL database successfully started.")
 }
 
+func postgresqlCreateStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	postgresqlCreate(cmd)
+	postgresqlStart(cmd)
+}
+
+func postgresqlRestart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	postgresqlStop(cmd, false)
+	postgresqlStart(cmd)
+}
+
 func postgresqlStop(cmd *cobra.Command, checkPort bool) {
+	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -221,6 +237,7 @@ func postgresqlStop(cmd *cobra.Command, checkPort bool) {
 }
 
 func postgresqlDelete(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "postgresql")

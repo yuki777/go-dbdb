@@ -4,6 +4,7 @@ Copyright © 2022 Yuki Adachi <yuki777@gmail.com>
 package cmd
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -14,6 +15,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -343,4 +345,9 @@ func pidStringToPidInt(pidString string) int {
 	}
 
 	return pidInt
+}
+
+func getCurrentFuncName() string {
+	pc, _, _, _ := runtime.Caller(1)
+	return fmt.Sprintf("%s", runtime.FuncForPC(pc).Name())
 }

@@ -34,6 +34,7 @@ func init() {
 }
 
 func redisCreate(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -85,6 +86,7 @@ func redisCreate(cmd *cobra.Command) {
 }
 
 func redisStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -129,7 +131,19 @@ func redisStart(cmd *cobra.Command) {
 	log.Println(optName, "Redis database successfully started.")
 }
 
+func redisCreateStart(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
+	redisCreate(cmd)
+	redisStart(cmd)
+}
+
+func redisRestart(cmd *cobra.Command) {
+	redisStop(cmd, false)
+	redisStart(cmd)
+}
+
 func redisStop(cmd *cobra.Command, checkPort bool) {
+	log.Println(getCurrentFuncName(), "called")
 	dbdbBaseDir := dbdbBaseDir()
 
 	optName := cmd.Flag("name").Value.String()
@@ -167,6 +181,7 @@ func redisStop(cmd *cobra.Command, checkPort bool) {
 }
 
 func redisDelete(cmd *cobra.Command) {
+	log.Println(getCurrentFuncName(), "called")
 	optName := cmd.Flag("name").Value.String()
 
 	dataDir := getDataDirByName(optName, "redis")
