@@ -156,13 +156,14 @@ func mongodbStop(cmd *cobra.Command, checkPort bool) {
 
 	remove(dataDir + "/mongodb.port")
 
+	time.Sleep(1 * time.Second) // wait to close the port
+
 	log.Println(optName, "MongoDB database successfully stopped.")
 }
 
 func mongodbRestart(cmd *cobra.Command) {
 	log.Println(getCurrentFuncName(), "called")
 	mongodbStop(cmd, false)
-	time.Sleep(1 * time.Second) // Waiting for the port to close
 	mongodbStart(cmd)
 }
 
